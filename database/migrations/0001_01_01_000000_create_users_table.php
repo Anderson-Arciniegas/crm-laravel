@@ -17,8 +17,17 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('address')->nullable();
+            $table->date('birth_date')->nullable();
+            $table->enum('client_type', ['person', 'business']); 
+            $table->enum('status', ['Active', 'Inactive', 'Pending', 'Deleted', 'Banned']);
+            $table->unsignedBigInteger('id_user_creator')->nullable();
+            $table->unsignedBigInteger('id_user_modification')->nullable();
             $table->rememberToken();
             $table->timestamps();
+
+            $table->foreign('id_user_creator')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('id_user_modification')->references('id')->on('users')->onDelete('cascade');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
