@@ -25,6 +25,17 @@ class UserController extends Controller
         return User::where('id', $id)->where('status', '!=', 'deleted')->first();
     }
 
+    /* 
+     * Get users admin
+     */
+    public function getUsersByRole(int $roleId) {
+        $users = User::whereHas('user_roles', function ($query) use ($roleId) {
+            $query->where('id', $roleId);
+        })->get();
+    
+        return $users;
+    }
+
     // En UserController.php
     public function create(array $data)
     {
