@@ -5,11 +5,24 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Rol;
+use App\Models\UserRole;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    protected $userController;
+
+    public function __construct(
+        UserController $userController,
+        UserRoleController $userRoleController,
+        RoleController $roleController,
+    )
+    {
+        $this->userController = $userController;
+        $this->userRoleController = $userRoleController;
+        $this->roleController = $roleController;
+    }
     /**
      * Register a new user.
      *
@@ -28,30 +41,33 @@ class AuthController extends Controller
             'role_code' => 'required|exists:roles,code',
         ]);
 
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->client_type = $request->client_type;
-        $user->birth_date = $request->birth_date;
-        $user->address = $request->address;
-        $code = $request->role_code;
-        $user->password = Hash::make($request->password);
+        // Preparar los datos para crear el usuario
+        $data = $request->only(['name', 'email', 'password', 'birth_date', 'client_type', 'address', 'role_code']);
+        // Llamar al método create de UserController
+        $user = $this->userController->create($data);
 
         if($user->save()){
             $credentials = $request->only('email', 'password');
             if(Auth::attempt($credentials)){
                 $userLogged = Auth::user();
-                $role = Rol::where('code', $code)->first();
-                $userRole = new UserRole();
-                $userRole->id_user = $user->id;
-                $userRole->id_role = $role->id;
-                $userRole->save();
+                $role = $this->roleController->getByCode($request->role_code);
+                $this->userRoleController->create([ 'id_user' => $user->id, 'id_role' => $role->id]);
                 return redirect()->intended(route('home'));
             }
             return redirect()->intended(route('register'));
         }
+
+        if ($user) {
+            // Intentar iniciar sesión con las credenciales del usuario recién creado
+            $credentials = $request->only('email', 'password');
+            if (Auth::attempt($credentials)) {
+                return redirect()->intended(route('home'));
+            }
+        }
+
         return redirect(route('register'))->with('error', 'Failed to create user');
     }
+
     /**
      * Recover Password
      * 
@@ -126,70 +142,5 @@ class AuthController extends Controller
     function logout(Request $request){
         Auth::logout();
         return redirect(route('login'));
-    }
-
-    /**
-     * Show the admin dashboard.
-     *
-     * @return \Illuminate\View\View
-     */
-    function showAdmin()
-    {
-        $users = $this->getUsers();
-        $roles = $this->getRoles();
-
-        return view('dashboard.admin', ['users' => $users, 'roles' => $roles]);
-    }
-
-    /**
-     * Get all users.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function getUsers()
-    {
-        return User::all();
-    }
-
-    /**
-     * Get all roles.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function getRoles()
-    {
-        return Rol::all();
-    }
-
-    /**
-     * Delete a user.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    function deleteUser(User $user)
-    {
-        $user->delete();
-        $users = $this->getUsers();
-
-        return redirect()->route('admin', ['users' => $users])->with('success', 'User deleted successfully');
-    }
-
-    /**
-     * Update the role of a user.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    function updateRole(Request $request, User $user)
-    {
-        $request->validate([
-            'role_id' => 'required|exists:roles,id',
-        ]);
-
-        $user->roles()->sync([$request->role_id]);
-
-        return redirect()->route('admin')->with('success', 'User role updated successfully');
     }
 }
