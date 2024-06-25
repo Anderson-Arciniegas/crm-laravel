@@ -21,20 +21,34 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string'
+            'password' => 'required|string',
+            'birth_date' => 'required|date',
+            'client_type' => 'required|in:person,business',
+            'address' => 'required|in:string',
+            'role_code' => 'required|exists:roles,code',
         ]);
 
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->client_type = $request->client_type;
+        $user->birth_date = $request->birth_date;
+        $user->address = $request->address;
+        $code = $request->role_code;
         $user->password = Hash::make($request->password);
 
-        if ($user->save()) {
-
-            $role = Rol::where('name', 'client')->first();
-            $user->roles()->attach($role);
-
-            return redirect(route('login'))->with('success', 'User created successfully');
+        if($user->save()){
+            $credentials = $request->only('email', 'password');
+            if(Auth::attempt($credentials)){
+                $userLogged = Auth::user();
+                $role = Rol::where('code', $code)->first();
+                $userRole = new UserRole();
+                $userRole->id_user = $user->id;
+                $userRole->id_role = $role->id;
+                $userRole->save();
+                return redirect()->intended(route('home'));
+            }
+            return redirect()->intended(route('register'));
         }
         return redirect(route('register'))->with('error', 'Failed to create user');
     }
@@ -45,26 +59,18 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    function login(Request $request)
-    {
+    function login(Request $request){
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string'
         ]);
 
         $credentials = $request->only('email', 'password');
-
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-
-            if ($user->roles->contains('name', 'admin')) {
-                return redirect()->intended(route('admin', ['user' => $user]));
-            } else {
-                return redirect()->intended(route('dashboard', ['user' => $user]));
-            }
+        if(Auth::attempt($credentials)){
+            $userLogged = Auth::user();
+            return redirect()->intended(route('home'));
         }
-
-        return redirect(route('login'))->with('error', 'Failed to login');
+        return redirect(route('login'))->with('error', 'Invalid credentials');
     }
 
     /**
@@ -73,15 +79,9 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    function logout(Request $request)
-    {
+    function logout(Request $request){
         Auth::logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect('/');
+        return redirect(route('login'));
     }
 
     /**
