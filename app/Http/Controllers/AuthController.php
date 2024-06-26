@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Rol;
+use App\Models\UserRol;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,12 +38,12 @@ class AuthController extends Controller
         $code = $request->role_code;
         $user->password = Hash::make($request->password);
 
-        if($user->save()){
+        if ($user->save()) {
             $credentials = $request->only('email', 'password');
-            if(Auth::attempt($credentials)){
+            if (Auth::attempt($credentials)) {
                 $userLogged = Auth::user();
                 $role = Rol::where('code', $code)->first();
-                $userRole = new UserRole();
+                $userRole = new UserRol();
                 $userRole->id_user = $user->id;
                 $userRole->id_role = $role->id;
                 $userRole->save();
@@ -59,14 +60,15 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    function login(Request $request){
+    function login(Request $request)
+    {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string'
         ]);
 
         $credentials = $request->only('email', 'password');
-        if(Auth::attempt($credentials)){
+        if (Auth::attempt($credentials)) {
             $userLogged = Auth::user();
             return redirect()->intended(route('home'));
         }
@@ -79,7 +81,8 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    function logout(Request $request){
+    function logout(Request $request)
+    {
         Auth::logout();
         return redirect(route('login'));
     }
