@@ -46,9 +46,9 @@ class AuthController extends Controller
         // Llamar al método create de UserController
         $user = $this->userController->create($data);
 
-        if($user->save()){
+        if ($user->save()) {
             $credentials = $request->only('email', 'password');
-            if(Auth::attempt($credentials)){
+            if (Auth::attempt($credentials)) {
                 $userLogged = Auth::user();
                 $role = $this->roleController->getByCode($request->role_code);
                 $this->userRoleController->create([ 'id_user' => $user->id, 'id_role' => $role->id]);
@@ -119,14 +119,15 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    function login(Request $request){
+    function login(Request $request)
+    {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string'
         ]);
 
         $credentials = $request->only('email', 'password');
-        if(Auth::attempt($credentials)){
+        if (Auth::attempt($credentials)) {
             $userLogged = Auth::user();
             return redirect()->intended(route('home'));
         }
@@ -139,7 +140,8 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    function logout(Request $request){
+    function logout(Request $request)
+    {
         Auth::logout();
         return redirect(route('login'));
     }

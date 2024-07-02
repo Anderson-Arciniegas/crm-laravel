@@ -10,7 +10,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function getAll()
     {
         // Return all users where status is not deleted
         return User::where('status', '!=', 'deleted')->get();
@@ -19,7 +19,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function getById(string $id)
     {
         // Return user by id and status is not deleted
         return User::where('id', $id)->where('status', '!=', 'deleted')->first();
@@ -28,7 +28,7 @@ class UserController extends Controller
     /* 
      * Get users admin
      */
-    public function getUsersByRole(int $roleId) {
+    public function getByRole(int $roleId) {
         $users = User::whereHas('user_roles', function ($query) use ($roleId) {
             $query->where('id', $roleId);
         })->get();
@@ -106,7 +106,7 @@ class UserController extends Controller
      */
     function delete(User $user)
     {
-        $user->update(['status' => 'deleted']);
+        $user->update(['status' => 'Deleted']);
         $users = $this->getUsers();
         return redirect()->route('admin', ['users' => $users])->with('success', 'User deleted successfully');
     }
