@@ -8,7 +8,7 @@
                 <div class="col-md-9 col-lg-6 col-xl-5">
                     <img src="{{asset('images/register.webp')}}" style="width:100%;" class="img-fluid rounded shadow" alt="Sample image">
                 </div>
-                <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mb-4">
                     <form method="POST" action="{{route("register")}}">
                         @csrf
 

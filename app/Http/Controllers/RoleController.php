@@ -13,7 +13,7 @@ class RoleController extends Controller
     public function index()
     {
         //Get roles where status is not deleted
-        return Role::where('status', '!=', 'deleted')->get();
+        return Rol::where('status', '!=', 'deleted')->get();
     }
 
     /**
@@ -22,13 +22,14 @@ class RoleController extends Controller
     public function show(string $id)
     {
         //Get one by id and status is no deleted
-        return Role::where('id', $id)->where('status', '!=', 'deleted')->first();
+        return Rol::where('id', $id)->where('status', '!=', 'deleted')->first();
     }
 
     /* 
      * Get by code 
      */
-    public function getByCode(string $code) {
-        return Role::where('code', $code)->where('status', '!=', 'deleted')->first();
+    public function getByCode(string $code)
+    {
+        return Rol::where('code', $code)->where('status', '!=', 'deleted')->first();
     }
 }

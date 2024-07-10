@@ -32,39 +32,47 @@ class AuthController extends Controller
      */
     function register(Request $request)
     {
+        print_r($request->all());
+
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
             'password' => 'required|string',
-            'birth_date' => 'required|date',
-            'client_type' => 'required|in:person,business',
+            'birth_date' => 'required|string',
+            'client_type' => 'required|in:string',
             'address' => 'required|in:string',
-            'role_code' => 'required|exists:roles,code',
+            // 'role_code' => 'required|exists:roles,code',
         ]);
 
+        print_r($request->all());
+
         // Preparar los datos para crear el usuario
-        $data = $request->only(['name', 'email', 'password', 'birth_date', 'client_type', 'address', 'role_code']);
+        $data = $request->only(['name', 'email', 'password', 'birth_date', 'client_type', 'address']);
         // Llamar al método create de UserController
         $user = $this->userController->create($data);
+        // $user = new User();
+        // $user->name = $request->name;
+        // $user->email = $request->email;
+        // $user->password = Hash::make($request->password);
 
         if ($user->save()) {
             $credentials = $request->only('email', 'password');
             if (Auth::attempt($credentials)) {
                 $userLogged = Auth::user();
-                $role = $this->roleController->getByCode($request->role_code);
+                $role = $this->roleController->getByCode('CLI02');
                 $this->userRoleController->create(['id_user' => $user->id, 'id_role' => $role->id]);
-                return redirect()->intended(route('home'));
+                return redirect()->intended(route('home', ['user' => $userLogged]));
             }
             return redirect()->intended(route('register'));
         }
 
-        if ($user) {
-            // Intentar iniciar sesión con las credenciales del usuario recién creado
-            $credentials = $request->only('email', 'password');
-            if (Auth::attempt($credentials)) {
-                return redirect()->intended(route('home'));
-            }
-        }
+        // if ($user) {
+        //     // Intentar iniciar sesión con las credenciales del usuario recién creado
+        //     $credentials = $request->only('email', 'password');
+        //     if (Auth::attempt($credentials)) {
+        //         return redirect()->intended(route('home'));
+        //     }
+        // }
 
         return redirect(route('register'))->with('error', 'Failed to create user');
     }

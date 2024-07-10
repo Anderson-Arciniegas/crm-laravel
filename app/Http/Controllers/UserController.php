@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserRol;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -28,11 +30,12 @@ class UserController extends Controller
     /* 
      * Get users admin
      */
-    public function getByRole(int $roleId) {
+    public function getByRole(int $roleId)
+    {
         $users = User::whereHas('user_roles', function ($query) use ($roleId) {
             $query->where('id', $roleId);
         })->get();
-    
+
         return $users;
     }
 
@@ -81,7 +84,7 @@ class UserController extends Controller
         }
 
         // Verificar si el idRol existe en la tabla user_roles para este usuario
-        $userRole = UserRole::where('id_user', $user->id)->first();
+        $userRole = UserRol::where('id_user', $user->id)->first();
 
         if ($userRole) {
             // Si existe, actualizar el idRol
@@ -89,7 +92,7 @@ class UserController extends Controller
             $userRole->save();
         } else {
             // Si no existe, crear una nueva asociación en user_roles
-            UserRole::create([
+            UserRol::create([
                 'user_id' => $user->id,
                 'role_id' => $request->idRol,
             ]);
