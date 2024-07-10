@@ -12,13 +12,14 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     protected $userController;
+    protected $userRoleController;
+    protected $roleController;
 
     public function __construct(
         UserController $userController,
         UserRoleController $userRoleController,
         RoleController $roleController,
-    )
-    {
+    ) {
         $this->userController = $userController;
         $this->userRoleController = $userRoleController;
         $this->roleController = $roleController;
@@ -51,7 +52,7 @@ class AuthController extends Controller
             if (Auth::attempt($credentials)) {
                 $userLogged = Auth::user();
                 $role = $this->roleController->getByCode($request->role_code);
-                $this->userRoleController->create([ 'id_user' => $user->id, 'id_role' => $role->id]);
+                $this->userRoleController->create(['id_user' => $user->id, 'id_role' => $role->id]);
                 return redirect()->intended(route('home'));
             }
             return redirect()->intended(route('register'));
@@ -74,7 +75,8 @@ class AuthController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    function recoverPassword(Request $request){
+    function recoverPassword(Request $request)
+    {
         $request->validate([
             'email' => 'required|email',
             'new_password' => 'required|string|confirmed'
@@ -82,7 +84,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
         $new_password = $request->new_password;
-        if($user){
+        if ($user) {
             $user->password = Hash::make($new_password);
             $user->save();
             return redirect(route('login'))->with('success', 'Password recovered successfully');
@@ -90,28 +92,28 @@ class AuthController extends Controller
         return redirect(route('recover-password'))->with('error', 'User not found');
     }
 
-    /**
-     * Change Password
-     * 
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    function changePassword(Request $request){
-        $request->validate([
-            'old_password' => 'required|string',
-            'new_password' => 'required|string|confirmed'
-        ]);
+    // /**
+    //  * Change Password
+    //  * 
+    //  * @param \Illuminate\Http\Request $request
+    //  * @return \Illuminate\Http\RedirectResponse
+    //  */
+    // function changePassword(Request $request){
+    //     $request->validate([
+    //         'old_password' => 'required|string',
+    //         'new_password' => 'required|string|confirmed'
+    //     ]);
 
-        $user = Auth::user();
-        $old_password = $request->old_password;
-        $new_password = $request->new_password;
-        if(Hash::check($old_password, $user->password)){
-            $user->password = Hash::make($new_password);
-            $user->save();
-            return redirect(route('home'))->with('success', 'Password changed successfully');
-        }
-        return redirect(route('change-password'))->with('error', 'Invalid password');
-    }
+    //     $user = Auth::user();
+    //     $old_password = $request->old_password;
+    //     $new_password = $request->new_password;
+    //     if(Hash::check($old_password, $user->password)){
+    //         $user->password = Hash::make($new_password);
+    //         $user->save();
+    //         return redirect(route('home'))->with('success', 'Password changed successfully');
+    //     }
+    //     return redirect(route('change-password'))->with('error', 'Invalid password');
+    // }
 
     /**
      * Log in a user.

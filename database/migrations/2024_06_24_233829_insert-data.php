@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -22,17 +23,17 @@ return new class extends Migration
         ]);
         //Crear roles admin
         DB::table('roles')->insert(
-            ['code' => 'ADM01','name' => 'Admin','status' => 'Active', 'id_user_creator' => 1],
-            ['code' => 'CLI02','name' => 'Client','status' => 'Active', 'id_user_creator' => 1],
-            ['code' => 'LEA03','name' => 'Lead','status' => 'Active', 'id_user_creator' => 1],
+            ['code' => 'ADM01', 'name' => 'Admin', 'status' => 'Active', 'id_user_creator' => 1],
+            ['code' => 'CLI02', 'name' => 'Client', 'status' => 'Active', 'id_user_creator' => 1],
+            ['code' => 'LEA03', 'name' => 'Lead', 'status' => 'Active', 'id_user_creator' => 1],
         );
         //Crear user roles
         DB::table('user_roles')->insert(
-            ['id_user' => 1,'id_role' => 1,'status' => 'Active']
+            ['id_user' => 1, 'id_role' => 1, 'status' => 'Active']
         );
         //Crear Ticket Types
         DB::table('ticket_types')->insert(
-            ['code' => 'GEN01','name' => 'General','status' => 'Active', 'id_user_creator' => 1],
+            ['code' => 'GEN01', 'name' => 'General', 'status' => 'Active', 'id_user_creator' => 1],
         );
     }
 
