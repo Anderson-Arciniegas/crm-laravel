@@ -87,29 +87,6 @@ class AuthController extends Controller
         return redirect(route('recover-password'))->with('error', 'User not found');
     }
 
-    // /**
-    //  * Change Password
-    //  * 
-    //  * @param \Illuminate\Http\Request $request
-    //  * @return \Illuminate\Http\RedirectResponse
-    //  */
-    // function changePassword(Request $request){
-    //     $request->validate([
-    //         'old_password' => 'required|string',
-    //         'new_password' => 'required|string|confirmed'
-    //     ]);
-
-    //     $user = Auth::user();
-    //     $old_password = $request->old_password;
-    //     $new_password = $request->new_password;
-    //     if(Hash::check($old_password, $user->password)){
-    //         $user->password = Hash::make($new_password);
-    //         $user->save();
-    //         return redirect(route('home'))->with('success', 'Password changed successfully');
-    //     }
-    //     return redirect(route('change-password'))->with('error', 'Invalid password');
-    // }
-
     /**
      * Log in a user.
      *
