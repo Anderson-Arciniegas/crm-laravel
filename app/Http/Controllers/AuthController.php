@@ -61,13 +61,6 @@ class AuthController extends Controller
             return redirect(route('auth.register'))->with('error', 'Failed to create user');
         }
 
-        // if ($user) {
-        //     // Intentar iniciar sesión con las credenciales del usuario recién creado
-        //     $credentials = $request->only('email', 'password');
-        //     if (Auth::attempt($credentials)) {
-        //         return redirect()->intended(route('home'));
-        //     }
-        // }
         return redirect(route('auth.register'))->with('error', 'Failed to create user');
     }
 
