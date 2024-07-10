@@ -44,6 +44,7 @@ class AuthController extends Controller
             'birth_date' => 'required|date_format:Y-m-d',
             'client_type' => 'required|string',
             'address' => 'required|string',
+            // 'role_code' => 'required|exists:roles,code',
         ]);
 
         $data = $request->only(['name', 'email', 'password', 'birth_date', 'client_type', 'address']);
