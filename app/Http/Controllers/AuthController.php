@@ -8,6 +8,7 @@ use App\Models\Rol;
 use App\Models\UserRole;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -24,6 +25,10 @@ class AuthController extends Controller
         $this->userRoleController = $userRoleController;
         $this->roleController = $roleController;
     }
+    function index()
+    {
+        return view('auth.login');
+    }
     /**
      * Register a new user.
      *
@@ -32,28 +37,17 @@ class AuthController extends Controller
      */
     function register(Request $request)
     {
-        print_r($request->all());
-
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
             'password' => 'required|string',
-            'birth_date' => 'required|string',
-            'client_type' => 'required|in:string',
-            'address' => 'required|in:string',
-            // 'role_code' => 'required|exists:roles,code',
+            'birth_date' => 'required|date_format:Y-m-d',
+            'client_type' => 'required|string',
+            'address' => 'required|string',
         ]);
 
-        print_r($request->all());
-
-        // Preparar los datos para crear el usuario
         $data = $request->only(['name', 'email', 'password', 'birth_date', 'client_type', 'address']);
-        // Llamar al método create de UserController
         $user = $this->userController->create($data);
-        // $user = new User();
-        // $user->name = $request->name;
-        // $user->email = $request->email;
-        // $user->password = Hash::make($request->password);
 
         if ($user->save()) {
             $credentials = $request->only('email', 'password');
@@ -61,9 +55,9 @@ class AuthController extends Controller
                 $userLogged = Auth::user();
                 $role = $this->roleController->getByCode('CLI02');
                 $this->userRoleController->create(['id_user' => $user->id, 'id_role' => $role->id]);
-                return redirect()->intended(route('home', ['user' => $userLogged]));
+                return redirect(route('home'));
             }
-            return redirect()->intended(route('register'));
+            return redirect(route('auth.register'))->with('error', 'Failed to create user');
         }
 
         // if ($user) {
@@ -73,8 +67,7 @@ class AuthController extends Controller
         //         return redirect()->intended(route('home'));
         //     }
         // }
-
-        return redirect(route('register'))->with('error', 'Failed to create user');
+        return redirect(route('auth.register'))->with('error', 'Failed to create user');
     }
 
     /**
@@ -95,7 +88,7 @@ class AuthController extends Controller
         if ($user) {
             $user->password = Hash::make($new_password);
             $user->save();
-            return redirect(route('login'))->with('success', 'Password recovered successfully');
+            return redirect(route('auth.login'))->with('success', 'Password recovered successfully');
         }
         return redirect(route('recover-password'))->with('error', 'User not found');
     }
@@ -131,6 +124,7 @@ class AuthController extends Controller
      */
     function login(Request $request)
     {
+        print_r('login');
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string'
@@ -141,7 +135,7 @@ class AuthController extends Controller
             $userLogged = Auth::user();
             return redirect()->intended(route('home'));
         }
-        return redirect(route('login'))->with('error', 'Invalid credentials');
+        return redirect(route('auth.login'))->with('error', 'Invalid credentials');
     }
 
     /**
@@ -153,6 +147,6 @@ class AuthController extends Controller
     function logout(Request $request)
     {
         Auth::logout();
-        return redirect(route('login'));
+        return redirect(route('auth.login'));
     }
 }

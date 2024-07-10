@@ -13,7 +13,7 @@
                     <p class="lead">Join our community and share your thoughts with the world.</p>
                     <hr class="my-4">
                     <p>Click the button below to login and start exploring.</p>
-                    <a class="btn btn-primary btn-lg" href="{{route('login')}}" role="button">Login</a>
+                    <a class="btn btn-primary btn-lg" href="{{route('auth.login')}}" role="button">Login</a>
                 </div>
             </div>
         </div>

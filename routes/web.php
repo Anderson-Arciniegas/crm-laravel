@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
 Route::middleware('guest')->group(function () {
 
     Route::get('/', function () {
@@ -20,8 +23,8 @@ Route::middleware('guest')->group(function () {
 });
 
 // Post
-Route::post('/register', [AuthController::class, 'register'])->name('register');
-Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
+Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 
 // Get
 Route::get('/users', [UserController::class, 'index'])->name('users.getAll');

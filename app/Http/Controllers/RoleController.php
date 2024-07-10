@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Rol;
+use Illuminate\Support\Facades\Log;
 
 class RoleController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */

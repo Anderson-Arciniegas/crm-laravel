@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserRole;
+use App\Models\UserRol;
 
 class UserRoleController extends Controller
 {
     // En UserController.php
     public function create(array $data)
     {
-        $userRole = UserRole::create([
+        $userRole = UserRol::create([
             'id_user' => $data['id_user'],
             'id_role' => $data['id_role'],
         ]);

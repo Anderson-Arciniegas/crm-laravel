@@ -9,7 +9,7 @@
                     <img src="{{asset('images/login.jpg')}}" style="width:450px;" class="img-fluid rounded shadow" alt="Sample image">
                 </div>
                 <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                    <form method="POST" action="{{route("login")}}">
+                    <form method="POST" action="{{route('auth.login')}}">
                         @csrf
 
                         @if(session() -> has("success"))
@@ -43,7 +43,7 @@
 
                         <div class="text-center text-lg-start mt-4 pt-2">
                             <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
-                            <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="{{route('register')}}" class="link-danger">Register</a></p>
+                            <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="{{route('auth.register')}}" class="link-danger">Register</a></p>
                         </div>
 
                     </form>
