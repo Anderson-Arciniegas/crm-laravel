@@ -4,9 +4,9 @@
 <div class="container">
     <section>
         <div class="container-fluid h-custom">
-            <div class="row d-flex justify-content-center align-items-center min-vh-100">
-                <div class="col-md-9 col-lg-6 col-xl-5">
-                    <img src="{{asset('images/register.png')}}" style="width:100%;" class="img-fluid rounded shadow" alt="Sample image">
+            <div class="row d-flex justify-content-center align-items-start min-vh-100">
+                <div class="col-md-9 col-lg-6 col-xl-5 mt-5">
+                    <img src="{{asset('images/register.png')}}" style="width:100%;" class="img-fluid " alt="Sample image">
                 </div>
                 <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mb-4">
                     <form method="POST" action="{{route('auth.register')}}">
@@ -24,13 +24,13 @@
                         @endif
 
                         @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                         @endif
 
                         <div class="divider d-flex align-items-center my-4">
@@ -47,6 +47,11 @@
                         <div data-mdb-input-init class="form-outline mb-4">
                             <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Enter a valid email address" />
                             <label class="form-label" for="form3Example3">Email address</label>
+                        </div>
+
+                        <div data-mdb-input-init class="form-outline mb-4">
+                            <input type="tel" id="phone" name="phone" class="form-control form-control-lg" placeholder="Enter your phone number" pattern="04[0-9]{2}[0-9]{3}[0-9]{4}" required />
+                            <label class="form-label" for="phone">Phone number</label>
                         </div>
 
                         <div data-mdb-input-init class="form-outline mb-4">

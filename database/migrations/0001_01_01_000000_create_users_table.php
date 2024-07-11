@@ -20,13 +20,13 @@ return new class extends Migration
             $table->string('password');
             $table->string('address')->nullable();
             $table->date('birth_date')->nullable();
-            $table->enum('client_type', ['person', 'business']); 
+            $table->enum('client_type', ['person', 'business']);
             $table->enum('status', ['Active', 'Inactive', 'Pending', 'Deleted', 'Banned', 'Completed']);
             $table->unsignedBigInteger('id_user_creator')->nullable();
             $table->unsignedBigInteger('id_user_modification')->nullable();
             $table->rememberToken();
             $table->timestamps();
-            
+
             $table->foreign('id_user_creator')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_user_modification')->references('id')->on('users')->onDelete('cascade');
             $table->unique(['email', 'status'], 'email_status_unique');
@@ -53,9 +53,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropUnique('email_status_unique');
-        });
+        // Schema::table('users', function (Blueprint $table) {
+        //     $table->dropUnique('email_status_unique');
+        // });
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');

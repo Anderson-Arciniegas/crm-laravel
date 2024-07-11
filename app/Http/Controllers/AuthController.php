@@ -48,7 +48,7 @@ class AuthController extends Controller
             // 'role_code' => 'required|exists:roles,code',
         ]);
 
-        $data = $request->only(['name', 'email', 'password', 'birth_date', 'client_type', 'address']);
+        $data = $request->only(['name', 'email', 'password', 'birth_date', 'client_type', 'address', 'phone']);
         $user = $this->userController->create($data);
 
         if ($user->save()) {
@@ -57,7 +57,7 @@ class AuthController extends Controller
                 $userLogged = Auth::user();
                 $role = $this->roleController->getByCode('LEA03');
                 $this->userRoleController->create(['id_user' => $user->id, 'id_role' => $role->id]);
-                return redirect(route('home'));
+                return redirect(route('dashboard'))->with('success', __('User created successfully'));
             }
             return redirect(route('auth.register'))->with('error', 'Failed to create user');
         }
@@ -105,7 +105,13 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $userLogged = Auth::user();
-            return redirect()->intended(route('home'));
+            Log::info('Usuario logueado: ' . $userLogged->userRoles->contains('id_role', '1'));
+
+
+            $roles = $userLogged->userRoles;
+
+            $isAdmin = $roles->contains('role_id', 1);
+            return redirect()->intended(route('dashboard', ['user' => $userLogged]))->with('success', __('User logged in successfully'));
         }
         return redirect(route('auth.login'))->with('error', 'Invalid credentials');
     }
@@ -119,6 +125,21 @@ class AuthController extends Controller
     function logout(Request $request)
     {
         Auth::logout();
-        return redirect(route('auth.login'));
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
+
+    /**
+     * Show the admin dashboard.
+     *
+     * @return \Illuminate\View\View
+     */
+    function showAdmin()
+    {
+        return view('dashboard.admin');
     }
 }

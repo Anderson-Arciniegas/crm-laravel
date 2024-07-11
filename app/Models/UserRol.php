@@ -20,5 +20,4 @@ class UserRol extends Model
         'id_role',
         'status',
     ];
-
 }

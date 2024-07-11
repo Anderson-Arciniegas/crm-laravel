@@ -5,10 +5,28 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\TasksController;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+/**
+ * Routes that require authentication and admin role.
+ */
+// Route::middleware(['auth', \App\Http\Middleware\CheckRole::class . ':0'])->group(function () {
+
+// });
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard.dashboard', ['user' => auth()->user()]);
+    })->name('dashboard');
+
+    Route::get('/admin', [AuthController::class, 'showAdmin'])->name('admin');
+
+    Route::get('/change-password', function () {
+        return view('profile.change-password', ['user' => auth()->user()]);
+    })->name('profile.change-password');
+});
+
 Route::middleware('guest')->group(function () {
 
     Route::get('/', function () {
@@ -27,6 +45,9 @@ Route::middleware('guest')->group(function () {
 // Post
 Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+Route::post('/change-password', [AuthController::class, 'recoverPassword'])->name('auth.password');
+
 
 // Get
 Route::get('/users', [UserController::class, 'getAll'])->name('users.getAll');

@@ -4,9 +4,9 @@
 <div class="container">
     <section>
         <div class="container-fluid h-custom">
-            <div class="row d-flex justify-content-center align-items-center min-vh-100">
-                <div class="col-md-9 col-lg-6 col-xl-5">
-                    <img src="{{asset('images/login.jpg')}}" style="width:450px;" class="img-fluid rounded shadow" alt="Sample image">
+            <div class="row d-flex justify-content-center align-items-start min-vh-100">
+                <div class="col-md-9 col-lg-6 col-xl-5 mt-5">
+                    <img src="{{asset('images/register.png')}}" style="width:100%;" class="img-fluid " alt="Sample image">
                 </div>
                 <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                     <form method="POST" action="{{route('auth.login')}}">

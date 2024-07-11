@@ -11,10 +11,10 @@
 
 <body>
 
-    <img style="width:50px;position:absolute;z-index:1000;top:5px;left:5px;" src="{{asset('images/logo.png')}}" alt="">
-
     <nav class="navbar navbar-expand-lg bg-body-secondary">
-        <div class="container-fluid">
+        <div>
+            <img style="width:50px;margin-right:20px" src="{{asset('images/logo.png')}}" alt="">
+
             <h1 class="navbar-brand" href="#">Kench</h1>
 
 

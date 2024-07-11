@@ -10,7 +10,7 @@ class Rol extends Model
     use HasFactory;
     protected $table = 'roles';
 
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -23,4 +23,9 @@ class Rol extends Model
         'status',
         'id_user_creator',
     ];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_roles', 'id_user', 'id_role');
+    }
 }
