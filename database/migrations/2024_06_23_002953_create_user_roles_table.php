@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_role');
             $table->enum('status', ['Active', 'Inactive', 'Deleted', 'Completed']);
             $table->timestamps();
-
+            $table->unique(['id_user', 'id_role']);
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_role')->references('id')->on('roles')->onDelete('cascade');
         });

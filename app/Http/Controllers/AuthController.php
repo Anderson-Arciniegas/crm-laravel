@@ -105,13 +105,14 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $userLogged = Auth::user();
-            Log::info('Usuario logueado: ' . $userLogged->userRoles->contains('id_role', '1'));
-
-
-            $roles = $userLogged->userRoles;
-
-            $isAdmin = $roles->contains('role_id', 1);
-            return redirect()->intended(route('dashboard', ['user' => $userLogged]))->with('success', __('User logged in successfully'));
+            $roles = $userLogged->roles;
+            if($roles[0]->code == 'ADM01'){
+                return redirect()->intended(route('admin', ['user' => $userLogged]))->with('success', __('User logged in successfully'));
+            } else if ($roles[0]->code == 'LEA03') {
+                return redirect()->intended(route('dashboard', ['user' => $userLogged]))->with('success', __('User logged in successfully'));
+            } else if ($roles[0]->code == 'CLI02') {
+                return redirect()->intended(route('dashboard', ['user' => $userLogged]))->with('success', __('User logged in successfully'));
+            }
         }
         return redirect(route('auth.login'))->with('error', 'Invalid credentials');
     }
