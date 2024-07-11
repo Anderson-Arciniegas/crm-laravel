@@ -15,7 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_project');
             $table->unsignedBigInteger('id_user');
             $table->boolean('is_admin')->default(false);
-            $table->enum('status', ['Active', 'Inactive', 'Pending', 'Deleted']);
+            $table->enum('status', ['Active', 'Inactive', 'Pending', 'Deleted', 'Completed']);
             $table->unsignedBigInteger('id_user_creator');
             $table->unsignedBigInteger('id_user_modification')->nullable();
             $table->timestamps();

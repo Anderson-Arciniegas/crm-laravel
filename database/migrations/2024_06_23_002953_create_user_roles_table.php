@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('user_roles', function (Blueprint $table) {
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_role');
-            $table->enum('status', ['Active', 'Inactive', 'Deleted']);
+            $table->enum('status', ['Active', 'Inactive', 'Deleted', 'Completed']);
             $table->timestamps();
 
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');

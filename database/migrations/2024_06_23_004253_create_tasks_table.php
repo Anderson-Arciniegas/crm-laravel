@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_user');
             $table->string('title');
             $table->string('description');
-            $table->enum('status', ['Active', 'Inactive', 'Pending', 'Deleted']);
+            $table->enum('status', ['Active', 'Inactive', 'Pending', 'Deleted', 'Completed']);
             $table->timestamps();
             $table->date('deadline');
             $table->unsignedBigInteger('id_user_creator');

@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TicketsController;
+use App\Http\Controllers\ProjectsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,3 +33,30 @@ Route::get('/users', [UserController::class, 'getAll'])->name('users.getAll');
 Route::get('/users/{id}', [UserController::class, 'getById'])->name('users.getById');
 Route::get('/users/role/{role}', [UserController::class, 'getByRole'])->name('users.getByRole');
 Route::get('/users/client/search/{name}', [UserController::class, 'getClientsByName'])->name('users.getClientsByName');
+
+//Tickets
+Route::post('/ticket', [TicketsController::class, 'create'])->name('tickets.create');
+Route::get('/ticket/not-assigned', [TicketsController::class, 'getNotAssigned'])->name('tickets.getNotAssigned');
+Route::get('/ticket/assigned', [TicketsController::class, 'getAssigned'])->name('tickets.getAssigned');
+Route::get('/ticket/completed', [TicketsController::class, 'getCompleted'])->name('tickets.getCompleted');
+Route::get('/ticket/{id}', [TicketsController::class, 'getById'])->name('tickets.getById');
+Route::put('/ticket/{id}', [TicketsController::class, 'update'])->name('tickets.update');
+Route::put('/ticket/{id}', [TicketsController::class, 'assign'])->name('tickets.assign');
+Route::put('/ticket/{id}/status/{status}', [TicketsController::class, 'manage'])->name('tickets.manage');
+
+//Projects
+Route::get('/projects', [ProjectsController::class, 'search'])->name('projects.search');
+Route::post('/projects', [ProjectsController::class, 'create'])->name('projects.create');
+Route::get('/projects/{id}', [ProjectsController::class, 'getById'])->name('projects.getById');
+Route::put('/projects/{id}', [ProjectsController::class, 'update'])->name('projects.update');
+Route::put('/projects/{id}', [ProjectsController::class, 'addUserToProjectTeam'])->name('projects.addUserToProjectTeam');
+Route::delete('/projects/{id}', [ProjectsController::class, 'destroy'])->name('projects.destroy');
+
+//Tasks
+Route::get('/tasks', [TasksController::class, 'search'])->name('tasks.search');
+Route::post('/tasks', [TasksController::class, 'create'])->name('tasks.create');
+Route::get('/tasks/{id}', [TasksController::class, 'getById'])->name('tasks.getById');
+Route::put('/tasks/{id}', [TasksController::class, 'update'])->name('tasks.update');
+Route::put('/tasks/{id}/complete', [TasksController::class, 'complete'])->name('tasks.complete');
+Route::put('/tasks/{id}/user/{id_user}', [TasksController::class, 'assignTask'])->name('tasks.assignTask');
+Route::delete('/tasks/{id}', [TasksController::class, 'destroy'])->name('tasks.destroy');

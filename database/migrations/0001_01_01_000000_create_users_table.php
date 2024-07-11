@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->date('birth_date')->nullable();
             $table->enum('client_type', ['person', 'business']); 
-            $table->enum('status', ['Active', 'Inactive', 'Pending', 'Deleted', 'Banned']);
+            $table->enum('status', ['Active', 'Inactive', 'Pending', 'Deleted', 'Banned', 'Completed']);
             $table->unsignedBigInteger('id_user_creator')->nullable();
             $table->unsignedBigInteger('id_user_modification')->nullable();
             $table->rememberToken();

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->string('description');
-            $table->enum('status', ['Active', 'Inactive', 'Deleted']);
+            $table->enum('status', ['Active', 'Inactive', 'Deleted', 'Completed']);
             $table->unsignedBigInteger('id_user_creator');
             $table->timestamps();
 

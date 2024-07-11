@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('description');
             $table->unsignedBigInteger('id_ticket_type');
             $table->unsignedBigInteger('id_admin');
-            $table->enum('status', ['Active', 'Inactive', 'Pending', 'Deleted']);
+            $table->enum('status', ['Active', 'Inactive', 'Pending', 'Deleted', 'Completed']);
             $table->unsignedBigInteger('id_user_creator');
             $table->unsignedBigInteger('id_user_modification')->nullable();
             $table->timestamps();

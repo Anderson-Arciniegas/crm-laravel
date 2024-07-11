@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('role_permissions', function (Blueprint $table) {
             $table->unsignedBigInteger('id_role');
             $table->unsignedBigInteger('id_permission');
-            $table->enum('status', ['Active', 'Inactive', 'Deleted']);
+            $table->enum('status', ['Active', 'Inactive', 'Deleted', 'Completed']);
             $table->timestamps();
 
             $table->foreign('id_role')->references('id')->on('roles')->onDelete('cascade');
