@@ -39,6 +39,15 @@ class UserController extends Controller
         return $users;
     }
 
+    public function getClientsByName(string $name)
+    {
+        $users = User::where('name', 'like', "%{$name}%")
+                    ->whereHas('user_roles', function ($query) {
+                        $query->where('code', 'CLI02');
+                    })->get();
+        return $users;
+    }
+
     // En UserController.php
     public function create(array $data)
     {
@@ -49,6 +58,7 @@ class UserController extends Controller
             'birth_date' => $data['birth_date'],
             'client_type' => $data['client_type'],
             'address' => $data['address'],
+            'phone' => $data['phone'],
         ]);
         return $user;
     }
@@ -56,9 +66,11 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id, Request $request)
     {
-        //
+        $user = User::findOrFail($id);
+        $user->update($request->only(['name', 'email', 'address', 'phone']));
+        return redirect()->route('users.index')->with('success', 'Usuario actualizado con éxito.');
     }
 
     /**

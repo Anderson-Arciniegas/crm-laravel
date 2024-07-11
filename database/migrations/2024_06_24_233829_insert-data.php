@@ -16,6 +16,7 @@ return new class extends Migration
         DB::table('users')->insert([
             'name' => 'admin',
             'email' => 'admin@kench.com',
+            'phone' => '+584120000000',
             'password' => bcrypt('secret'),
             'email_verified_at' => now(),
             'client_type' => 'person',

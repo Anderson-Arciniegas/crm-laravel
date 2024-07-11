@@ -40,6 +40,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
+            'phone' => 'required|string|max:15',
             'password' => 'required|string',
             'birth_date' => 'required|date_format:Y-m-d',
             'client_type' => 'required|string',
@@ -54,7 +55,7 @@ class AuthController extends Controller
             $credentials = $request->only('email', 'password');
             if (Auth::attempt($credentials)) {
                 $userLogged = Auth::user();
-                $role = $this->roleController->getByCode('CLI02');
+                $role = $this->roleController->getByCode('LEA03');
                 $this->userRoleController->create(['id_user' => $user->id, 'id_role' => $role->id]);
                 return redirect(route('home'));
             }

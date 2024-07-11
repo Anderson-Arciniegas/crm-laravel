@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email');
+            $table->string('phone')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('address')->nullable();
@@ -25,9 +26,10 @@ return new class extends Migration
             $table->unsignedBigInteger('id_user_modification')->nullable();
             $table->rememberToken();
             $table->timestamps();
-
+            
             $table->foreign('id_user_creator')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_user_modification')->references('id')->on('users')->onDelete('cascade');
+            $table->unique(['email', 'status'], 'email_status_unique');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -51,6 +53,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropUnique('email_status_unique');
+        });
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
