@@ -106,7 +106,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $userLogged = Auth::user();
             $roles = $userLogged->roles;
-            if($roles[0]->code == 'ADM01'){
+            if ($roles[0]->code == 'ADM01') {
                 return redirect()->intended(route('admin', ['user' => $userLogged]))->with('success', __('User logged in successfully'));
             } else if ($roles[0]->code == 'LEA03') {
                 return redirect()->intended(route('dashboard', ['user' => $userLogged]))->with('success', __('User logged in successfully'));
@@ -141,6 +141,8 @@ class AuthController extends Controller
      */
     function showAdmin()
     {
-        return view('dashboard.admin');
+        $user = Auth::user();
+
+        return view('dashboard.admin', ['user' => $user]);
     }
 }

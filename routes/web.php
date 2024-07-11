@@ -10,17 +10,15 @@ use App\Http\Controllers\TasksController;
 /**
  * Routes that require authentication and admin role.
  */
-// Route::middleware(['auth', \App\Http\Middleware\CheckRole::class . ':0'])->group(function () {
-
-// });
+Route::middleware(['auth', \App\Http\Middleware\CheckRole::class])->group(function () {
+    Route::get('/admin', [AuthController::class, 'showAdmin'])->name('admin');
+});
 
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard.dashboard', ['user' => auth()->user()]);
     })->name('dashboard');
-
-    Route::get('/admin', [AuthController::class, 'showAdmin'])->name('admin');
 
     Route::get('/change-password', function () {
         return view('profile.change-password', ['user' => auth()->user()]);
