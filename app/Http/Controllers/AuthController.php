@@ -96,7 +96,6 @@ class AuthController extends Controller
      */
     function login(Request $request)
     {
-        print_r('login');
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string'
@@ -142,5 +141,28 @@ class AuthController extends Controller
     function showAdmin()
     {
         return view('dashboard.admin');
+    }
+
+    function changePassword(Request $request) {
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|string|min:8',
+        ]);
+
+        $user = Auth::user();
+        if (!Hash::check($request->old_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'La contraseña actual no es correcta.']);
+        }
+
+        // Actualizar la contraseña
+        $user->password = Hash::make($request->new_password);
+        $user->id_user_modification = $user->id;
+
+        if($user->save()) {
+            return back()->with('success', 'Contraseña cambiada con éxito.');
+        } else {
+            Log::info('Error al guardar la contraseña');
+            return back()->with('error', 'Error al cambiar la contraseña.');
+        };
     }
 }
