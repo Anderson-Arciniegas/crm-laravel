@@ -18,7 +18,7 @@
         </div>
         @endif
         <div class="mt-5 p-0" style="width:100%;">
-            <form method="POST" action="{{route('auth.login')}}">
+            <form method="POST" action="{{route('auth.changePassword')}}">
                 @csrf
 
                 @if(session() -> has("success"))
@@ -40,7 +40,7 @@
                 </div>
 
                 <div data-mdb-input-init class="form-outline mb-3">
-                    <input type="new-password" id="new_password" name="new_password" class="form-control form-control-lg" placeholder="Enter new password" />
+                    <input type="password" id="new_password" name="new_password" class="form-control form-control-lg" placeholder="Enter new password" />
                     <label class="form-label" for="form3Example4">New password</label>
                 </div>
 

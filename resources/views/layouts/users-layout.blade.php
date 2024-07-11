@@ -13,9 +13,8 @@
 
     <nav class="navbar navbar-expand-lg bg-body-secondary">
         <div>
-            <img style="width:50px;margin-right:20px" src="{{asset('images/logo.png')}}" alt="">
-
-            <h1 class="navbar-brand" href="#">Kench</h1>
+            <a href="dashboard"><img style="width:50px;margin-right:20px" src="{{asset('images/logo.png')}}" alt=""></a>
+            <a href="dashboard"><h1 class="navbar-brand">Kench</h1></a>
 
 
         </div>

@@ -69,7 +69,8 @@ class UserController extends Controller
     public function edit(string $id, Request $request)
     {
         $user = User::findOrFail($id);
-        $user->update($request->only(['name', 'email', 'address', 'phone']));
+        $user->update($request->only(['name', 'email', 'address', 'phone']), ['id_user_modification' => $user->id]);
+
         return redirect()->route('users.index')->with('success', 'Usuario actualizado con éxito.');
     }
 
@@ -89,7 +90,7 @@ class UserController extends Controller
         ]);
 
         // Buscar el usuario por ID
-        $user = User::find($request->idUser);
+        $user = User::findOrFail($id);
 
         if (!$user) {
             return redirect()->route('home')->with('error', 'User not found');
@@ -121,7 +122,7 @@ class UserController extends Controller
      */
     function delete(User $user)
     {
-        $user->update(['status' => 'Deleted']);
+        $user->update(['status' => 'Deleted', 'id_user_modification' => $user->id]);
         $users = $this->getUsers();
         return redirect()->route('admin', ['users' => $users])->with('success', 'User deleted successfully');
     }
