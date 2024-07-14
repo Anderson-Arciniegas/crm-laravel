@@ -79,7 +79,7 @@ class UserController extends Controller
     public function getClientsByName(Request $request)
     {
         $name = $request->query('search');
-        $users = User::where('name', 'like', "%{$name}%")
+        $users = User::where('email', 'like', "%{$name}%")
             ->whereHas('roles', function ($query) {
                 $query->where('code', 'CLI02');
             })->get();

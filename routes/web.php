@@ -6,6 +6,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\TasksController;
+use App\Models\Ticket;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Routes that require authentication and admin role.
@@ -26,6 +28,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard.dashboard', ['user' => auth()->user()]);
     })->name('dashboard');
+
+    Route::get('/create-ticket', function () {
+        return view('tickets.create-tickets', ['user' => auth()->user()]);
+    })->name('tickets.create-tickets');
+
+    Route::get('/my-ticket', function () {
+        $user = auth()->user();
+        Log::info($user);
+        $tickets = Ticket::where('id_user_creator', '=', $user->id)->get();
+        return view('tickets.my-tickets', ['user' => $user, 'tickets' => $tickets]);
+    })->name('tickets.my-tickets');
 
     Route::get('/change-password', function () {
         return view('profile.change-password', ['user' => auth()->user()]);
@@ -66,6 +79,7 @@ Route::get('/users/client/search', [UserController::class, 'getClientsByName'])-
 
 //Tickets
 Route::post('/ticket', [TicketsController::class, 'create'])->name('tickets.create');
+Route::get('/ticket/my-tickets', [TicketsController::class, 'getMyTickets'])->name('tickets.getMyTickets');
 Route::get('/ticket/not-assigned', [TicketsController::class, 'getNotAssigned'])->name('tickets.getNotAssigned');
 Route::get('/ticket/assigned', [TicketsController::class, 'getAssigned'])->name('tickets.getAssigned');
 Route::get('/ticket/completed', [TicketsController::class, 'getCompleted'])->name('tickets.getCompleted');

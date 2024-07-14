@@ -18,7 +18,9 @@
         </div>
         @endif
         <div class="mt-5 p-0" style="width:100%;">
-            <a style="width:100%;" class=" btn btn-primary btn-lg" href="{{route('profile.change-password')}}" role="button">Change password</a>
+            <a style="width:100%;" class=" btn btn-primary btn-lg" href="{{route('tickets.create-tickets')}}" role="button">Create Ticket</a>
+            <a style="width:100%;" class="mt-3 btn btn-primary btn-lg" href="{{route('tickets.my-tickets')}}" role="button">My Tickets</a>
+            <a style="width:100%;" class="mt-3 btn btn-primary btn-lg" href="{{route('profile.change-password')}}" role="button">Change password</a>
 
             <form class="mt-3 p-0" method="POST" action="{{ route('auth.logout') }}">
                 @csrf

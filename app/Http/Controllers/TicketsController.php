@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Ticket;
+use App\Models\User;
+use App\Models\UserRol;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class TicketsController extends Controller
 {
@@ -16,7 +19,7 @@ class TicketsController extends Controller
         return Ticket::where('status', '!=', 'Deleted')
             ->where('status', '!=', 'Inactive')
             ->where('status', '!=', 'Pending')
-            ->whereNull('idAdmin')
+            ->whereNull('id_admin')
             ->get();
     }
 
@@ -24,14 +27,22 @@ class TicketsController extends Controller
     {
         return Ticket::where('status', '!=', 'Deleted')
             ->where('status', '!=', 'Inactive')
-            ->whereNotNull('idAdmin')
+            ->whereNotNull('id_admin')
             ->get();
     }
 
     public function getCompleted()
     {
         return Ticket::where('status', '=', 'Completed')
-            ->whereNotNull('idAdmin')
+            ->whereNotNull('id_admin')
+            ->get();
+    }
+
+    public function getMyTickets()
+    {
+        $userLogged = Auth::user();
+        return Ticket::where('status', '!=', 'Deleted')
+            ->andWhere('id_user_creator', '=', $userLogged->id)
             ->get();
     }
 
@@ -44,26 +55,33 @@ class TicketsController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'description' => 'required',
+            'ticket_types' => 'required',
         ]);
 
         $userLogged = Auth::user();
         if(!$userLogged) {
             return redirect()->route('tickets.index')->with('error', 'Usuario no encontrado.');
         }
-
+        
         // Creación del ticket
         $ticket = new Ticket();
         $ticket->title = $validatedData['title'];
         $ticket->description = $validatedData['description'];
+        $ticket->id_ticket_type = $validatedData['ticket_types'];
         $ticket->status = 'Active';
         $ticket->id_user_creator = $userLogged->id;
+        $adminUser = UserRol::where('id_role', '2')->inRandomOrder()->first();
+
+        if($adminUser) {
+            $ticket->id_admin = $adminUser->id_user;
+        }
 
         if($ticket->save()) {
             // Si el ticket se guarda correctamente, se envía un mensaje de éxito
-            return redirect()->route('tickets.index')->with('success', 'Ticket creado con éxito.');
+            return redirect()->route('auth.login')->with('success', 'Ticket creado con éxito.');
         } else {
             // Si el ticket no se guarda correctamente, se envía un mensaje de error
-            return redirect()->route('tickets.index')->with('error', 'Error al crear el ticket.');
+            return redirect()->route('auth.login')->with('error', 'Error al crear el ticket.');
         }
     }
 
