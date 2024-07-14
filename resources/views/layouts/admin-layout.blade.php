@@ -13,12 +13,13 @@
 
     <nav class="navbar navbar-expand-lg bg-body-secondary">
         <div>
-            <a href="dashboard" style="margin-right:20px;"><img style="width:50px;" src="{{asset('images/logo.png')}}" alt=""></a>
-            <a href="dashboard">
+            <a href="admin" style="margin-right:20px;"><img style="width:50px;" src="{{asset('images/logo.png')}}" alt=""></a>
+            <a href="admin" style="margin-right:100px">
                 <h1 class="navbar-brand">Kench</h1>
             </a>
-
-
+            <a href="{{route('clients')}}" style="margin-right:30px">
+                <span class="navbar-brand">Clients</span>
+            </a>
         </div>
     </nav>
 

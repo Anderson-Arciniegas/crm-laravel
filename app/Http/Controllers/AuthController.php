@@ -55,7 +55,7 @@ class AuthController extends Controller
             $credentials = $request->only('email', 'password');
             if (Auth::attempt($credentials)) {
                 $userLogged = Auth::user();
-                $role = $this->roleController->getByCode('LEA03');
+                $role = $this->roleController->getByCode('CLI02');
                 $this->userRoleController->create(['id_user' => $user->id, 'id_role' => $role->id]);
                 return redirect(route('dashboard'))->with('success', __('User created successfully'));
             }
@@ -145,7 +145,8 @@ class AuthController extends Controller
         return view('dashboard.admin', ['user' => $user]);
     }
 
-    function changePassword(Request $request) {
+    function changePassword(Request $request)
+    {
         $request->validate([
             'old_password' => 'required',
             'new_password' => 'required|string|min:8',
@@ -160,7 +161,7 @@ class AuthController extends Controller
         $user->password = Hash::make($request->new_password);
         $user->id_user_modification = $user->id;
 
-        if($user->save()) {
+        if ($user->save()) {
             return back()->with('success', 'Contraseña cambiada con éxito.');
         } else {
             Log::info('Error al guardar la contraseña');

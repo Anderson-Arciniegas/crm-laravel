@@ -12,6 +12,13 @@ use App\Http\Controllers\TasksController;
  */
 Route::middleware(['auth', \App\Http\Middleware\CheckRole::class])->group(function () {
     Route::get('/admin', [AuthController::class, 'showAdmin'])->name('admin');
+
+    Route::get('/clients', [UserController::class, 'showClients'])->name('clients');
+
+    Route::get('/clients/{id}', [UserController::class, 'showClientDetails'])->name('details');
+
+
+    Route::delete('/users/{id}', [UserController::class, 'delete'])->name('users.delete');
 });
 
 
@@ -23,6 +30,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/change-password', function () {
         return view('profile.change-password', ['user' => auth()->user()]);
     })->name('profile.change-password');
+
+    Route::get('/clients/{id}/edit', [UserController::class, 'editClient'])->name('edit');
+
+    Route::put('/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
 });
 
 Route::middleware('guest')->group(function () {
@@ -51,7 +62,7 @@ Route::post('/change-password', [AuthController::class, 'changePassword'])->name
 Route::get('/users', [UserController::class, 'getAll'])->name('users.getAll');
 Route::get('/users/{id}', [UserController::class, 'getById'])->name('users.getById');
 Route::get('/users/role/{role}', [UserController::class, 'getByRole'])->name('users.getByRole');
-Route::get('/users/client/search/{name}', [UserController::class, 'getClientsByName'])->name('users.getClientsByName');
+Route::get('/users/client/search', [UserController::class, 'getClientsByName'])->name('users.getClientsByName');
 
 //Tickets
 Route::post('/ticket', [TicketsController::class, 'create'])->name('tickets.create');

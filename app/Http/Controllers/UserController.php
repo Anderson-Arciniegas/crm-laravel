@@ -6,9 +6,39 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserRol;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+
+
+    /**
+     * Show the admin dashboard.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showClients()
+    {
+        $users = $this->getClients();
+
+        return view('clients.clients', ['users' => $users]);
+    }
+
+    public function editClient($id)
+    {
+        $user = User::findOrFail($id);
+
+        return view('clients.edit', ['user' => $user]);
+    }
+
+
+
+    public function showClientDetails($id)
+    {
+        $user = User::findOrFail($id);
+        return view('clients.details', ['user' => $user]);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -16,6 +46,13 @@ class UserController extends Controller
     {
         // Return all users where status is not deleted
         return User::where('status', '!=', 'deleted')->get();
+    }
+
+    public function getClients()
+    {
+        return User::where('status', '!=', 'deleted')->whereHas('roles', function ($query) {
+            $query->where('code', 'CLI02');
+        })->get();
     }
 
     /**
@@ -39,13 +76,14 @@ class UserController extends Controller
         return $users;
     }
 
-    public function getClientsByName(string $name)
+    public function getClientsByName(Request $request)
     {
+        $name = $request->query('search');
         $users = User::where('name', 'like', "%{$name}%")
-                    ->whereHas('user_roles', function ($query) {
-                        $query->where('code', 'CLI02');
-                    })->get();
-        return $users;
+            ->whereHas('roles', function ($query) {
+                $query->where('code', 'CLI02');
+            })->get();
+        return view('clients.clients', ['users' => $users]);
     }
 
     // En UserController.php
@@ -69,9 +107,9 @@ class UserController extends Controller
     public function edit(string $id, Request $request)
     {
         $user = User::findOrFail($id);
-        $user->update($request->only(['name', 'email', 'address', 'phone']), ['id_user_modification' => $user->id]);
+        $user->update($request->only(['name', 'email', 'address', 'phone', 'client_type']), ['id_user_modification' => Auth::user()->id]);
 
-        return redirect()->route('users.index')->with('success', 'Usuario actualizado con éxito.');
+        return redirect()->route('details', $id)->with('success', 'Usuario actualizado con éxito.');
     }
 
     /**
@@ -120,10 +158,10 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\RedirectResponse
      */
-    function delete(User $user)
+    function delete(string $id)
     {
-        $user->update(['status' => 'Deleted', 'id_user_modification' => $user->id]);
-        $users = $this->getUsers();
-        return redirect()->route('admin', ['users' => $users])->with('success', 'User deleted successfully');
+        $user = User::findOrFail($id);
+        $user->update(['status' => 'Deleted', 'id_user_modification' => Auth::user()->id]);
+        return redirect()->route('clients')->with('success', 'User deleted successfully');
     }
 }

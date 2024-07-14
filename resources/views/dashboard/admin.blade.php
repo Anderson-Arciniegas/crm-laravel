@@ -1,4 +1,4 @@
-@extends("layouts.users-layout")
+@extends("layouts.admin-layout")
 @section("title", "Admin Dashboard")
 @section("content")
 <div class="container">
@@ -11,8 +11,8 @@
         @if(Auth::check())
         <div class="card">
             <div class="card-body">
-                <h2 class="card-title">{{ Auth::user()->name }}</h5>
-                    <h3 class="card-subtitle mb-2 text-muted">{{ Auth::user()->email }}</h6>
+                <h2 class="card-title">{{ Auth::user()->name }}</h2>
+                <h3 class="card-subtitle mb-2 text-muted">{{ Auth::user()->email }}</h3>
 
             </div>
         </div>

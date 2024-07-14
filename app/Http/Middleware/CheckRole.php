@@ -11,9 +11,10 @@ class CheckRole
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::check() || Auth::user()->roles[0]->code !== 'AMD01') {
+        if (!Auth::check() || Auth::user()->roles[0]->code !== 'ADM01') {
             return redirect(route('dashboard'));
         }
+        Log::info('CheckRole middleware: ' . Auth::user()->roles[0]->code);
 
         return $next($request);
     }
