@@ -120,10 +120,6 @@ Route::middleware('guest')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 });
 
-
-// Get
-
-
 //Tickets
 Route::post('/ticket', [TicketsController::class, 'create'])->name('tickets.create');
 Route::get('/ticket/my-tickets', [TicketsController::class, 'getMyTickets'])->name('tickets.getMyTickets');
@@ -134,7 +130,6 @@ Route::get('/ticket/{id}', [TicketsController::class, 'getById'])->name('tickets
 Route::put('/ticket/{id}', [TicketsController::class, 'update'])->name('tickets.update');
 Route::put('/ticket/{id}', [TicketsController::class, 'assign'])->name('tickets.assign');
 Route::put('/ticket/{id}/status/{status}', [TicketsController::class, 'manage'])->name('tickets.manage');
-
 
 //Tasks
 Route::get('/tasks', [TasksController::class, 'search'])->name('tasks.search');

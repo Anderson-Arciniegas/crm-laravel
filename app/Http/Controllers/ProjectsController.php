@@ -270,6 +270,37 @@ class ProjectsController extends Controller
         }
     }
 
+    /**
+     * Complete project
+     */
+    public function complete(string $id)
+    {
+        $userLogged = Auth::user();
+        if (!$userLogged) {
+            return redirect()->route('projects')->with('error', 'Usuario no encontrado.');
+        }
+
+        // Buscar el proyecto por ID
+        $project = Project::where('id', $id)->where('status', '!=', 'deleted')->first();
+
+        // Verificar si el proyecto fue encontrado
+        if (!$project) {
+            return redirect()->route('projects')->with('error', 'Proyecto no encontrado.');
+        }
+
+        // Actualizar el proyecto con los datos validados
+        $project->status = 'Completed';
+
+        // Guardar el proyecto actualizado en la base de datos
+        if ($project->save()) {
+            // Si el proyecto se actualiza correctamente, se envía un mensaje de éxito
+            return redirect()->route('projects')->with('success', 'Proyecto actualizado con éxito.');
+        } else {
+            // Si hay un error al guardar, enviar un mensaje de error
+            return redirect()->route('projects')->with('error', 'Error al actualizar el proyecto.');
+        }
+    }
+
     public function deleteUserMember(string $projectId, string $userId)
     {
         $userLogged = Auth::user();
