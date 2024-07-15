@@ -227,11 +227,7 @@ class ProjectsController extends Controller
             ->first();
 
         if($projectTeam) {
-            $projectTeam->id_project = $projectId;
-            $projectTeam->id_user = $userId;
-            $projectTeam->status = 'Deleted';
-            $projectTeam->id_user_modification = $userLogged->id;
-            if($projectTeam->save()) {
+            if($projectTeam->update(['status' => 'Deleted', 'id_user_modification' => $userLogged->id])) {
                 return redirect()->route('projects.show', $projectId)->with('success', 'Usuario eliminado del proyecto con éxito.');
             } else {
                 return redirect()->route('projects.show', $projectId)->with('error', 'Error al eliminar el usuario del proyecto.');
