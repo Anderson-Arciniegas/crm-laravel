@@ -16,6 +16,7 @@ class ProjectTeam extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'id_project',
         'id_user',
         'is_admin',
