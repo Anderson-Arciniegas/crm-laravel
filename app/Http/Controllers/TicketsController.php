@@ -23,12 +23,14 @@ class TicketsController extends Controller
             ->get();
     }
 
-    public function getAssigned()
+    public function getAll()
     {
-        return Ticket::where('status', '!=', 'Deleted')
-            ->where('status', '!=', 'Inactive')
-            ->whereNotNull('id_admin')
+        $userLogged = Auth::user();
+        $tickets = Ticket::where('id_admin', '=', $userLogged->id)
+            ->where('status', '!=', 'Deleted')
+            ->orderBy('created_at', 'desc') // Ordena por el campo 'created_at' de manera descendente
             ->get();
+        return view('tickets.tickets', ['tickets' => $tickets]);
     }
 
     public function getCompleted()
@@ -60,7 +62,7 @@ class TicketsController extends Controller
 
         $userLogged = Auth::user();
         if(!$userLogged) {
-            return redirect()->route('tickets.index')->with('error', 'Usuario no encontrado.');
+            return redirect()->route('auth.login')->with('error', 'Usuario no encontrado.');
         }
         
         // Creación del ticket
@@ -70,7 +72,7 @@ class TicketsController extends Controller
         $ticket->id_ticket_type = $validatedData['ticket_types'];
         $ticket->status = 'Active';
         $ticket->id_user_creator = $userLogged->id;
-        $adminUser = UserRol::where('id_role', '2')->inRandomOrder()->first();
+        $adminUser = UserRol::where('id_role', '1')->inRandomOrder()->first();
 
         if($adminUser) {
             $ticket->id_admin = $adminUser->id_user;
@@ -78,10 +80,10 @@ class TicketsController extends Controller
 
         if($ticket->save()) {
             // Si el ticket se guarda correctamente, se envía un mensaje de éxito
-            return redirect()->route('auth.login')->with('success', 'Ticket creado con éxito.');
+            return redirect()->route('dashboard')->with('success', 'Ticket creado con éxito.');
         } else {
             // Si el ticket no se guarda correctamente, se envía un mensaje de error
-            return redirect()->route('auth.login')->with('error', 'Error al crear el ticket.');
+            return redirect()->route('dashboard')->with('error', 'Error al crear el ticket.');
         }
     }
 
@@ -100,7 +102,7 @@ class TicketsController extends Controller
     {
         $userLogged = Auth::user();
         if(!$userLogged) {
-            return redirect()->route('tickets.index')->with('error', 'Usuario no encontrado.');
+            return redirect()->route('auth.login')->with('error', 'Usuario no encontrado.');
         }
 
         $ticket = Ticket::where('id', $id)->where('status', '!=', 'deleted')->first();
@@ -110,13 +112,13 @@ class TicketsController extends Controller
             $ticket->id_user_modification = $userLogged->id;
             if ($ticket->save()) {
                 // Si el ticket se actualiza correctamente, se envía un mensaje de éxito
-                return redirect()->route('tickets.index')->with('success', 'Ticket actualizado con éxito.');
+                return redirect()->route('admin')->with('success', 'Ticket actualizado con éxito.');
             } else {
                 // Si hay un error al guardar, enviar un mensaje de error
-                return redirect()->route('tickets.index')->with('error', 'Error al actualizar el Ticket.');
+                return redirect()->route('auth.login')->with('error', 'Error al actualizar el Ticket.');
             }
         } else {
-            return redirect()->route('tickets.index')->with('error', 'Ticket no encontrado.');
+            return redirect()->route('auth.login')->with('error', 'Ticket no encontrado.');
         }
     }
 
@@ -127,7 +129,7 @@ class TicketsController extends Controller
     {
         $userLogged = Auth::user();
         if(!$userLogged) {
-            return redirect()->route('tickets.index')->with('error', 'Usuario no encontrado.');
+            return redirect()->route('auth.login')->with('error', 'Usuario no encontrado.');
         }
 
         $ticket = Ticket::where('id', $id)->where('status', '!=', 'deleted')->first();
@@ -136,12 +138,12 @@ class TicketsController extends Controller
             $ticket->status = $status;
             $ticket->id_user_modification = $userLogged->id;
             if ($ticket->save()) {
-                return redirect()->route('tickets.index')->with('success', 'Ticket actualizado con éxito.');
+                return redirect()->route('admin')->with('success', 'Ticket actualizado con éxito.');
             } else {
-                return redirect()->route('tickets.index')->with('error', 'Error al actualizar el Ticket.');
+                return redirect()->route('admin')->with('error', 'Error al actualizar el Ticket.');
             }
         } else {
-            return redirect()->route('tickets.index')->with('error', 'Ticket no encontrado.');
+            return redirect()->route('admin')->with('error', 'Ticket no encontrado.');
         }
     }
 
@@ -152,7 +154,7 @@ class TicketsController extends Controller
     {
         $userLogged = Auth::user();
         if(!$userLogged) {
-            return redirect()->route('tickets.index')->with('error', 'Usuario no encontrado.');
+            return redirect()->route('auth.login')->with('error', 'Usuario no encontrado.');
         }
 
         // Validación de los datos del formulario
@@ -166,7 +168,7 @@ class TicketsController extends Controller
     
         // Verificar si el ticket fue encontrado
         if (!$ticket) {
-            return redirect()->route('tickets.index')->with('error', 'Ticket no encontrado.');
+            return redirect()->route('auth.login')->with('error', 'Ticket no encontrado.');
         }
     
         // Actualización del ticket
@@ -176,10 +178,10 @@ class TicketsController extends Controller
 
         if ($ticket->save()) {
             // Si el ticket se actualiza correctamente, se envía un mensaje de éxito
-            return redirect()->route('tickets.index')->with('success', 'Ticket actualizado con éxito.');
+            return redirect()->route('admin')->with('success', 'Ticket actualizado con éxito.');
         } else {
             // Si hay un error al guardar, enviar un mensaje de error
-            return redirect()->route('tickets.index')->with('error', 'Error al actualizar el Ticket.');
+            return redirect()->route('auth.login')->with('error', 'Error al actualizar el Ticket.');
         }
     }
 }

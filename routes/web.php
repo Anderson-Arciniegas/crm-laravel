@@ -14,7 +14,10 @@ use Illuminate\Support\Facades\Log;
  */
 Route::middleware(['auth', \App\Http\Middleware\CheckRole::class])->group(function () {
     Route::get('/admin', [AuthController::class, 'showAdmin'])->name('admin');
+    
 
+    Route::get('/tickets',[TicketsController::class, 'getAll'])->name('tickets.assigned');
+    Route::put('/ticket/{id}/status/{status}', [TicketsController::class, 'manage'])->name('tickets.manage');
     Route::get('/clients', [UserController::class, 'showClients'])->name('clients');
 
     Route::get('/clients/{id}', [UserController::class, 'showClientDetails'])->name('details');
@@ -26,22 +29,36 @@ Route::middleware(['auth', \App\Http\Middleware\CheckRole::class])->group(functi
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard.dashboard', ['user' => auth()->user()]);
+        $user = auth()->user();
+        if($user) {
+            return view('dashboard.dashboard', ['user' => $user]);
+        }
+        return view('auth.login');
     })->name('dashboard');
 
     Route::get('/create-ticket', function () {
-        return view('tickets.create-tickets', ['user' => auth()->user()]);
+        $user = auth()->user();
+        if($user) {
+            return view('tickets.create-tickets', ['user' => $user]);
+        }
+        return view('auth.login');
     })->name('tickets.create-tickets');
 
     Route::get('/my-ticket', function () {
         $user = auth()->user();
-        Log::info($user);
-        $tickets = Ticket::where('id_user_creator', '=', $user->id)->get();
-        return view('tickets.my-tickets', ['user' => $user, 'tickets' => $tickets]);
+        if($user) {
+            $tickets = Ticket::where('id_user_creator', '=', $user->id)->get();
+            return view('tickets.my-tickets', ['user' => $user, 'tickets' => $tickets]);
+        }
+        return view('auth.login');
     })->name('tickets.my-tickets');
 
     Route::get('/change-password', function () {
-        return view('profile.change-password', ['user' => auth()->user()]);
+        $user = auth()->user();
+        if($user) {
+            return view('profile.change-password', ['user' => $user]);
+        }
+        return view('auth.login');
     })->name('profile.change-password');
 
     Route::get('/clients/{id}/edit', [UserController::class, 'editClient'])->name('edit');
