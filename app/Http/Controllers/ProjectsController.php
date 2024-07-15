@@ -16,25 +16,34 @@ class ProjectsController extends Controller
      */
     public function search(Request $request)
     {
-        $query = Project::query();
-        // Filtrar por nombre si se proporciona
-        if ($request->has('title')) {
-            $query->where('title', 'like', '%' . $request->title . '%');
+        $userLogged = Auth::user();
+        if(!$userLogged) {
+            return redirect()->route('auth.login')->with('error', 'Usuario no encontrado.');
         }
-    
-        // Filtrar por estado si se proporciona
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
+
+        $projectTeamIds = ProjectTeam::where('id_user', $userLogged->id)->pluck('id_project');
+        if($projectTeam) {
+            $query = Project::query();
+            // Filtrar por nombre si se proporciona
+            if ($request->has('title')) {
+                $query->where('title', 'like', '%' . $request->title . '%');
+            }
+        
+            // Filtrar por estado si se proporciona
+            if ($request->has('status')) {
+                $query->where('status', $request->status);
+            }
+        
+            // Filtrar por fecha de creación si se proporciona
+            if ($request->has('created_at')) {
+                $date = date('Y-m-d', strtotime($request->created_at)); // Asegúrate de que el formato de fecha coincide con tu base de datos
+                $query->whereDate('created_at', '=', $date);
+            }
+            $query->whereIn('id', $projectTeamIds);
+            return $query->get();
+        } else {
+            return redirect()->route('projects')>with('error', 'No tienes permiso para ver este proyecto.');
         }
-    
-        // Filtrar por fecha de creación si se proporciona
-        if ($request->has('created_at')) {
-            $date = date('Y-m-d', strtotime($request->created_at)); // Asegúrate de que el formato de fecha coincide con tu base de datos
-            $query->whereDate('created_at', '=', $date);
-        }
-    
-        // Obtener los proyectos filtrados
-        return $query->get();
     }
 
     /**
@@ -85,8 +94,20 @@ class ProjectsController extends Controller
      */
     public function getById(string $id)
     {
-        return Project::where('id', $id)->where('status', '!=', 'deleted')->first();
+        $userLogged = Auth::user();
+        if(!$userLogged) {
+            return redirect()->route('auth.login')->with('error', 'Usuario no encontrado.');
+        }
+
+        $projectTeam = ProjectTeam::where('id_project', $id)->where('id_user', $userLogged->id)->first();
+
+        if($projectTeam->id_user == $userLogged->id) {
+            return Project::where('id', $id)->where('status', '!=', 'deleted')->first();
+        } else {
+            return redirect()->route('projects')>with('error', 'No tienes permiso para ver este proyecto.');
+        }
     }
+
 
     public function addUserToProjectTeam(Request $request, string $projectId)
     {
