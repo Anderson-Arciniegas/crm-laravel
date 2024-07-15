@@ -14,23 +14,29 @@ use Illuminate\Support\Facades\Log;
  */
 Route::middleware(['auth', \App\Http\Middleware\CheckRole::class])->group(function () {
     Route::get('/admin', [AuthController::class, 'showAdmin'])->name('admin');
-    
 
-    Route::get('/tickets',[TicketsController::class, 'getAll'])->name('tickets.assigned');
+
+    Route::get('/tickets', [TicketsController::class, 'getAll'])->name('tickets.assigned');
     Route::put('/ticket/{id}/status/{status}', [TicketsController::class, 'manage'])->name('tickets.manage');
     Route::get('/clients', [UserController::class, 'showClients'])->name('clients');
 
     Route::get('/clients/{id}', [UserController::class, 'showClientDetails'])->name('details');
 
-
     Route::delete('/users/{id}', [UserController::class, 'delete'])->name('users.delete');
+
+    Route::get('/clients/{id}/edit', [UserController::class, 'editClient'])->name('edit');
+
+    Route::get('/users', [UserController::class, 'getAll'])->name('users.getAll');
+    Route::get('/users/{id}', [UserController::class, 'getById'])->name('users.getById');
+    Route::get('/users/role/{role}', [UserController::class, 'getByRole'])->name('users.getByRole');
+    Route::get('/users/client/search', [UserController::class, 'getClientsByName'])->name('users.getClientsByName');
 });
 
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         $user = auth()->user();
-        if($user) {
+        if ($user) {
             return view('dashboard.dashboard', ['user' => $user]);
         }
         return view('auth.login');
@@ -38,7 +44,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/create-ticket', function () {
         $user = auth()->user();
-        if($user) {
+        if ($user) {
             return view('tickets.create-tickets', ['user' => $user]);
         }
         return view('auth.login');
@@ -46,7 +52,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/my-ticket', function () {
         $user = auth()->user();
-        if($user) {
+        if ($user) {
             $tickets = Ticket::where('id_user_creator', '=', $user->id)->get();
             return view('tickets.my-tickets', ['user' => $user, 'tickets' => $tickets]);
         }
@@ -55,19 +61,48 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/change-password', function () {
         $user = auth()->user();
-        if($user) {
+        if ($user) {
             return view('profile.change-password', ['user' => $user]);
         }
         return view('auth.login');
     })->name('profile.change-password');
 
-    Route::get('/clients/{id}/edit', [UserController::class, 'editClient'])->name('edit');
-
     Route::put('/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
+
+    Route::get('/projects', [ProjectsController::class, 'showProjects'])->name('projects');
+
+    Route::get('/projects/{id}', [ProjectsController::class, 'showProjectDetails'])->name('projects.details');
+
+    Route::get('/projects/{id}/team', [ProjectsController::class, 'showProjectTeam'])->name('projects.team');
+
+    Route::get('/projects/{id}/team/add', [ProjectsController::class, 'showProjectAddMember'])->name('projects.member');
+
+    Route::get('/projects/{id}/edit', [ProjectsController::class, 'showProjectEdit'])->name('projects.edit');
+
+
+    Route::get('/projects/create', function () {
+        return view('projects.create', ['user' => auth()->user()]);
+    })->name(
+        'createProject'
+    );
+
+    Route::get('/get-projects', [ProjectsController::class, 'search'])->name('projects.search');
+
+    Route::post('/change-password', [AuthController::class, 'changePassword'])->name('auth.changePassword');
+
+
+    //Projects
+    Route::post('/projects', [ProjectsController::class, 'create'])->name('projects.create');
+    Route::get('/get-projects/{id}', [ProjectsController::class, 'getById'])->name('projects.getById');
+    Route::put('/projects/{id}', [ProjectsController::class, 'update'])->name('projects.update');
+    Route::put('/projects/member/{id}', [ProjectsController::class, 'addUserToProjectTeam'])->name('projects.addUserToProjectTeam');
+
+    Route::put('/projects/{projectId}/member/{userId}/delete', [ProjectsController::class, 'deleteUserMember'])->name('projects.deleteUserProjectTeam');
+
+    Route::delete('/projects/{id}', [ProjectsController::class, 'destroy'])->name('projects.destroy');
 });
 
 Route::middleware('guest')->group(function () {
-
     Route::get('/', function () {
         return view('welcome');
     })->name('home');
@@ -79,20 +114,15 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', function () {
         return view('auth.register');
     });
-});
 
-// Post
-Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
-Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
-Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
-Route::post('/change-password', [AuthController::class, 'changePassword'])->name('auth.changePassword');
+    Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
+    Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+});
 
 
 // Get
-Route::get('/users', [UserController::class, 'getAll'])->name('users.getAll');
-Route::get('/users/{id}', [UserController::class, 'getById'])->name('users.getById');
-Route::get('/users/role/{role}', [UserController::class, 'getByRole'])->name('users.getByRole');
-Route::get('/users/client/search', [UserController::class, 'getClientsByName'])->name('users.getClientsByName');
+
 
 //Tickets
 Route::post('/ticket', [TicketsController::class, 'create'])->name('tickets.create');
@@ -105,13 +135,6 @@ Route::put('/ticket/{id}', [TicketsController::class, 'update'])->name('tickets.
 Route::put('/ticket/{id}', [TicketsController::class, 'assign'])->name('tickets.assign');
 Route::put('/ticket/{id}/status/{status}', [TicketsController::class, 'manage'])->name('tickets.manage');
 
-//Projects
-Route::get('/projects', [ProjectsController::class, 'search'])->name('projects.search');
-Route::post('/projects', [ProjectsController::class, 'create'])->name('projects.create');
-Route::get('/projects/{id}', [ProjectsController::class, 'getById'])->name('projects.getById');
-Route::put('/projects/{id}', [ProjectsController::class, 'update'])->name('projects.update');
-Route::put('/projects/{id}', [ProjectsController::class, 'addUserToProjectTeam'])->name('projects.addUserToProjectTeam');
-Route::delete('/projects/{id}', [ProjectsController::class, 'destroy'])->name('projects.destroy');
 
 //Tasks
 Route::get('/tasks', [TasksController::class, 'search'])->name('tasks.search');

@@ -18,6 +18,16 @@
                 <h1 class="navbar-brand">Kench</h1>
             </a>
 
+            @if(Auth::check())
+            <a href="{{route('projects')}}" style="margin-right:30px">
+                <span class="navbar-brand">Projects</span>
+            </a>
+
+
+            <span style="margin-left:50vw;" class="card-title">{{ Auth::user()->name }}</span>
+
+            @endif
+
 
         </div>
     </nav>

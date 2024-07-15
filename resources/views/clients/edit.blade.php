@@ -80,8 +80,8 @@
                 </div>
 
             </form>
-
-            @endif
+        </div>
+        @endif
     </section>
 </div>
 
