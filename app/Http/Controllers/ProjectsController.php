@@ -110,7 +110,10 @@ class ProjectsController extends Controller
 
     public function checkUserIsAdmin(string $projectId, string $userId)
     {
-        $projectTeam = ProjectTeam::where('id_project', $projectId)->where('id_user', $userId)->first();
+        $projectTeam = ProjectTeam::where('id_project', $projectId)
+            ->where('id_user', $userId)
+            ->where('status', '!=', 'Deleted')
+            ->first();
         if($projectTeam) {
             return $projectTeam->is_admin;
         } else {
@@ -120,7 +123,7 @@ class ProjectsController extends Controller
 
     public function getAllTeamMembers(string $projectId)
     {
-        $projectTeam = ProjectTeam::where('id_project', $projectId)->get();
+        $projectTeam = ProjectTeam::where('id_project', $projectId)->where('status', '!=', 'Deleted')->get();
         $users = User::whereIn('id', $projectTeam->pluck('id_user'))->get();
         return $users;
     }
@@ -208,6 +211,31 @@ class ProjectsController extends Controller
         } else {
             // Si hay un error al guardar, enviar un mensaje de error
             return redirect()->route('projects.index')->with('error', 'Error al actualizar el proyecto.');
+        }
+    }
+
+    public function deleteUserMember(string $projectId, string $userId)
+    {
+        $userLogged = Auth::user();
+        if(!$userLogged) {
+            return redirect()->route('projects.index')->with('error', 'Usuario no encontrado.');
+        }
+
+        $projectTeam = ProjectTeam::where('id_project', $projectId)
+            ->where('id_user', $userId)
+            ->where('status', '!=', 'Deleted')
+            ->first();
+
+        if($projectTeam) {
+            $projectTeam->status = 'Deleted';
+            $projectTeam->id_user_modification = $userLogged->id;
+            if($projectTeam->save()) {
+                return redirect()->route('projects.show', $projectId)->with('success', 'Usuario eliminado del proyecto con éxito.');
+            } else {
+                return redirect()->route('projects.show', $projectId)->with('error', 'Error al eliminar el usuario del proyecto.');
+            }
+        } else {
+            return redirect()->route('projects.show', $projectId)->with('error', 'Usuario no encontrado en el proyecto.');
         }
     }
 
