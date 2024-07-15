@@ -108,6 +108,16 @@ class ProjectsController extends Controller
         }
     }
 
+    public function checkUserIsAdmin(string $projectId, string $userId)
+    {
+        $projectTeam = ProjectTeam::where('id_project', $projectId)->where('id_user', $userId)->first();
+        if($projectTeam) {
+            return $projectTeam->is_admin;
+        } else {
+            return false;
+        }
+    }
+
 
     public function addUserToProjectTeam(Request $request, string $projectId)
     {
