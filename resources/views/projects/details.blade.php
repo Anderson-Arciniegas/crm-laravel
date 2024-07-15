@@ -18,12 +18,19 @@
                 <div class="card-subtitle mb-2">{{ $project->end_date }}</div>
             </div>
         </div>
-        @if($isAdmin)
+        @if($isAdmin && $project->status != 'Completed')
         <div class="mt-5 p-0" style="width:100%;">
 
-            <a style="width:100%;" class="btn btn-primary btn-lg" href="{{route('projects.team', $project->id)}}" role="button">Team</a>
+            <a style="width:100%;" class="btn btn-primary btn-lg" href="{{route('tasks', $project->id)}}" role="button">Tasks</a>
+
+            <a style="width:100%;" class="btn btn-primary btn-lg mt-3" href="{{route('projects.team', $project->id)}}" role="button">Team</a>
 
             <a style="width:100%;" class="mt-3 btn btn-primary btn-lg" href="{{route('projects.edit', $project->id)}}" role="button">Edit</a>
+
+            <form class="mt-3 p-0" method="POST" action="{{ route('projects.complete', $project->id) }}">
+                @csrf
+                <button type="submit" style="width:100%;" class="btn btn-success btn-lg">Complete</button>
+            </form>
 
             <form class="mt-3 p-0" method="POST" action="{{ route('projects.destroy', $project->id) }}">
                 @csrf

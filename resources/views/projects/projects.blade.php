@@ -60,6 +60,8 @@
             </tbody>
         </table>
         @endif
+
+
         <div class="mt-5 p-0" style="width:100%;">
             <a style="width:100%;" class=" btn btn-primary btn-lg" href="{{route('createProject')}}" role="button">Create project</a>
         </div>

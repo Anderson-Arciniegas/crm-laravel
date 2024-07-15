@@ -71,6 +71,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/projects', [ProjectsController::class, 'showProjects'])->name('projects');
 
+    Route::get('/projects/create', function () {
+        return view('projects.create', ['user' => auth()->user()]);
+    })->name(
+        'createProject'
+    );
+
     Route::get('/projects/{id}', [ProjectsController::class, 'showProjectDetails'])->name('projects.details');
 
     Route::get('/projects/{id}/team', [ProjectsController::class, 'showProjectTeam'])->name('projects.team');
@@ -80,26 +86,36 @@ Route::middleware('auth')->group(function () {
     Route::get('/projects/{id}/edit', [ProjectsController::class, 'showProjectEdit'])->name('projects.edit');
 
 
-    Route::get('/projects/create', function () {
-        return view('projects.create', ['user' => auth()->user()]);
-    })->name(
-        'createProject'
-    );
-
     Route::get('/get-projects', [ProjectsController::class, 'search'])->name('projects.search');
+
+    Route::get('/projects/{id}/tasks', [TasksController::class, 'showTasks'])->name('tasks');
+
+    Route::get('/projects/{id}/tasks/create', [TasksController::class, 'showCreateTask'])->name('task.create');
+
+    Route::get('/projects/{id}/tasks/{id_task}', [TasksController::class, 'showDetailsTask'])->name('tasks.details');
 
     Route::post('/change-password', [AuthController::class, 'changePassword'])->name('auth.changePassword');
 
-
     //Projects
     Route::post('/projects', [ProjectsController::class, 'create'])->name('projects.create');
+    Route::post('/projects/{id}/complete', [ProjectsController::class, 'complete'])->name('projects.complete');
+
     Route::get('/get-projects/{id}', [ProjectsController::class, 'getById'])->name('projects.getById');
     Route::put('/projects/{id}', [ProjectsController::class, 'update'])->name('projects.update');
     Route::put('/projects/member/{id}', [ProjectsController::class, 'addUserToProjectTeam'])->name('projects.addUserToProjectTeam');
-
     Route::put('/projects/{projectId}/member/{userId}/delete', [ProjectsController::class, 'deleteUserMember'])->name('projects.deleteUserProjectTeam');
-
     Route::delete('/projects/{id}', [ProjectsController::class, 'destroy'])->name('projects.destroy');
+
+
+    Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+    //Tasks
+    Route::get('/get-tasks', [TasksController::class, 'search'])->name('tasks.search');
+    Route::post('/tasks/{id}', [TasksController::class, 'create'])->name('tasks.create');
+    Route::get('/get-tasks/{id}', [TasksController::class, 'getById'])->name('tasks.getById');
+    Route::put('/tasks/{id}', [TasksController::class, 'update'])->name('tasks.update');
+    Route::put('{id}/tasks/{id_task}/complete', [TasksController::class, 'complete'])->name('tasks.complete');
+    Route::put('/tasks/{id}/user/{id_user}', [TasksController::class, 'assignTask'])->name('tasks.assignTask');
+    Route::delete('{id}/tasks/{id_task}/delete', [TasksController::class, 'destroy'])->name('tasks.destroy');
 });
 
 Route::middleware('guest')->group(function () {
@@ -117,7 +133,6 @@ Route::middleware('guest')->group(function () {
 
     Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
     Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
-    Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 });
 
 //Tickets
@@ -130,12 +145,3 @@ Route::get('/ticket/{id}', [TicketsController::class, 'getById'])->name('tickets
 Route::put('/ticket/{id}', [TicketsController::class, 'update'])->name('tickets.update');
 Route::put('/ticket/{id}', [TicketsController::class, 'assign'])->name('tickets.assign');
 Route::put('/ticket/{id}/status/{status}', [TicketsController::class, 'manage'])->name('tickets.manage');
-
-//Tasks
-Route::get('/tasks', [TasksController::class, 'search'])->name('tasks.search');
-Route::post('/tasks', [TasksController::class, 'create'])->name('tasks.create');
-Route::get('/tasks/{id}', [TasksController::class, 'getById'])->name('tasks.getById');
-Route::put('/tasks/{id}', [TasksController::class, 'update'])->name('tasks.update');
-Route::put('/tasks/{id}/complete', [TasksController::class, 'complete'])->name('tasks.complete');
-Route::put('/tasks/{id}/user/{id_user}', [TasksController::class, 'assignTask'])->name('tasks.assignTask');
-Route::delete('/tasks/{id}', [TasksController::class, 'destroy'])->name('tasks.destroy');
