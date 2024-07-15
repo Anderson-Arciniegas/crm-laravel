@@ -121,7 +121,8 @@ class ProjectsController extends Controller
     public function getAllTeamMembers(string $projectId)
     {
         $projectTeam = ProjectTeam::where('id_project', $projectId)->get();
-        return $projectTeam;
+        $users = User::whereIn('id', $projectTeam->pluck('id_user'))->get();
+        return $users;
     }
 
 
