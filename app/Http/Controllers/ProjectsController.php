@@ -227,6 +227,8 @@ class ProjectsController extends Controller
             ->first();
 
         if($projectTeam) {
+            $projectTeam->id_project = $projectId;
+            $projectTeam->id_user = $userId;
             $projectTeam->status = 'Deleted';
             $projectTeam->id_user_modification = $userLogged->id;
             if($projectTeam->save()) {
