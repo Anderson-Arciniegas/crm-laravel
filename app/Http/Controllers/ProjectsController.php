@@ -25,8 +25,8 @@ class ProjectsController extends Controller
         if($projectTeam) {
             $query = Project::query();
             // Filtrar por nombre si se proporciona
-            if ($request->has('title')) {
-                $query->where('title', 'like', '%' . $request->title . '%');
+            if ($request->has('name')) {
+                $query->where('name', 'like', '%' . $request->name . '%');
             }
         
             // Filtrar por estado si se proporciona
