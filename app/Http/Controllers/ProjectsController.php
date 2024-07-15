@@ -118,6 +118,12 @@ class ProjectsController extends Controller
         }
     }
 
+    public function getAllTeamMembers(string $projectId)
+    {
+        $projectTeam = ProjectTeam::where('id_project', $projectId)->get();
+        return $projectTeam;
+    }
+
 
     public function addUserToProjectTeam(Request $request, string $projectId)
     {
