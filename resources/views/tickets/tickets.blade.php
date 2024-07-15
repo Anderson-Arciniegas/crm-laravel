@@ -1,4 +1,4 @@
-@extends("layouts.users-layout")
+@extends("layouts.admin-layout")
 @section("title", "Dashboard")
 @section("content")
 <div class="container">
