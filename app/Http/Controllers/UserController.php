@@ -44,13 +44,13 @@ class UserController extends Controller
      */
     public function getAll()
     {
-        // Return all users where status is not deleted
-        return User::where('status', '!=', 'deleted')->get();
+        // Return all users where status is not Deleted
+        return User::where('status', '!=', 'Deleted')->get();
     }
 
     public function getClients()
     {
-        return User::where('status', '!=', 'deleted')->whereHas('roles', function ($query) {
+        return User::where('status', '!=', 'Deleted')->whereHas('roles', function ($query) {
             $query->where('code', 'CLI02');
         })->get();
     }
@@ -60,8 +60,8 @@ class UserController extends Controller
      */
     public function getById(string $id)
     {
-        // Return user by id and status is not deleted
-        return User::where('id', $id)->where('status', '!=', 'deleted')->first();
+        // Return user by id and status is not Deleted
+        return User::where('id', $id)->where('status', '!=', 'Deleted')->first();
     }
 
     /* 
@@ -162,6 +162,6 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $user->update(['status' => 'Deleted', 'id_user_modification' => Auth::user()->id]);
-        return redirect()->route('clients')->with('success', 'User deleted successfully');
+        return redirect()->route('clients')->with('success', 'User Deleted successfully');
     }
 }

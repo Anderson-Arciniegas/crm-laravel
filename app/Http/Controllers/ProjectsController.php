@@ -20,7 +20,7 @@ class ProjectsController extends Controller
         //     return redirect()->route('dashboard')->with('error', 'Usuario no encontrado.');
         // }
 
-        $projects = Project::where('id_user_creator', $user->id)->where('status', '!=', 'deleted')->get();
+        $projects = Project::where('id_user_creator', $user->id)->where('status', '!=', 'Deleted')->get();
         return view('projects.projects', ['projects' => $projects]);
     }
 
@@ -157,7 +157,7 @@ class ProjectsController extends Controller
         $projectTeam = ProjectTeam::where('id_project', $id)->where('id_user', $userLogged->id)->first();
 
         if ($projectTeam->id_user == $userLogged->id) {
-            return Project::where('id', $id)->where('status', '!=', 'deleted')->first();
+            return Project::where('id', $id)->where('status', '!=', 'Deleted')->first();
         } else {
             return redirect()->route('projects') > with('error', 'No tienes permiso para ver este proyecto.');
         }
@@ -198,7 +198,7 @@ class ProjectsController extends Controller
             return redirect()->route('/')->with('error', 'Usuario no encontrado.');
         }
 
-        $user = User::where('email', $request->email)->where('status', '!=', 'deleted')->first();
+        $user = User::where('email', $request->email)->where('status', '!=', 'Deleted')->first();
         if (!$user) {
             return redirect()->route('projects')->with('error', 'Usuario no encontrado.');
         }
@@ -246,7 +246,7 @@ class ProjectsController extends Controller
         }
 
         // Buscar el proyecto por ID
-        $project = Project::where('id', $id)->where('status', '!=', 'deleted')->first();
+        $project = Project::where('id', $id)->where('status', '!=', 'Deleted')->first();
 
         // Verificar si el proyecto fue encontrado
         if (!$project) {
@@ -281,7 +281,7 @@ class ProjectsController extends Controller
         }
 
         // Buscar el proyecto por ID
-        $project = Project::where('id', $id)->where('status', '!=', 'deleted')->first();
+        $project = Project::where('id', $id)->where('status', '!=', 'Deleted')->first();
 
         // Verificar si el proyecto fue encontrado
         if (!$project) {
@@ -336,7 +336,7 @@ class ProjectsController extends Controller
             return redirect()->route('projects')->with('error', 'Usuario no encontrado.');
         }
 
-        $project = Project::where('id', $id)->where('status', '!=', 'deleted')->first();
+        $project = Project::where('id', $id)->where('status', '!=', 'Deleted')->first();
 
         if (!$project) {
             return redirect()->route('projects')->with('error', 'Proyecto no encontrado.');

@@ -101,6 +101,11 @@ class AuthController extends Controller
             'password' => 'required|string'
         ]);
 
+        $user = User::where('email', $request->email)->where('status', '!=', 'Deleted')->first();
+        if (!$user) {
+            return redirect(route('auth.login'))->with('error', 'User not found');
+        }
+
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $userLogged = Auth::user();

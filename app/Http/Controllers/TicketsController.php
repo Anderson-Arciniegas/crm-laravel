@@ -92,7 +92,7 @@ class TicketsController extends Controller
      */
     public function getById(string $id)
     {
-        return Ticket::where('id', $id)->where('status', '!=', 'deleted')->first();
+        return Ticket::where('id', $id)->where('status', '!=', 'Deleted')->first();
     }
 
     /**
@@ -105,7 +105,7 @@ class TicketsController extends Controller
             return redirect()->route('auth.login')->with('error', 'Usuario no encontrado.');
         }
 
-        $ticket = Ticket::where('id', $id)->where('status', '!=', 'deleted')->first();
+        $ticket = Ticket::where('id', $id)->where('status', '!=', 'Deleted')->first();
         // Verificar si el ticket fue encontrado
         if ($ticket) {
             $ticket->idAdmin = $idAdmin;
@@ -132,7 +132,7 @@ class TicketsController extends Controller
             return redirect()->route('auth.login')->with('error', 'Usuario no encontrado.');
         }
 
-        $ticket = Ticket::where('id', $id)->where('status', '!=', 'deleted')->first();
+        $ticket = Ticket::where('id', $id)->where('status', '!=', 'Deleted')->first();
         // Verificar si el ticket fue encontrado
         if ($ticket) {
             $ticket->status = $status;
@@ -164,7 +164,7 @@ class TicketsController extends Controller
         ]);
     
         // Buscar el ticket por ID
-        $ticket = Ticket::where('id', $id)->where('status', '!=', 'deleted')->first();
+        $ticket = Ticket::where('id', $id)->where('status', '!=', 'Deleted')->first();
     
         // Verificar si el ticket fue encontrado
         if (!$ticket) {

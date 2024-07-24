@@ -14,8 +14,8 @@ class TasksController extends Controller
 
     public function showTasks($id)
     {
-        $project = Project::where('id', $id)->where('status', '!=', 'deleted')->first();
-        $tasks = Task::where('status', '!=', 'deleted')->where('id_project', $id)->get();
+        $project = Project::where('id', $id)->where('status', '!=', 'Deleted')->first();
+        $tasks = Task::where('status', '!=', 'Deleted')->where('id_project', $id)->get();
         if (!$project) {
             return redirect()->route('projects')->with('error', 'Proyecto no encontrado.');
         }
@@ -25,7 +25,7 @@ class TasksController extends Controller
     public function showCreateTask($id)
     {
 
-        $project = Project::where('id', $id)->where('status', '!=', 'deleted')->first();
+        $project = Project::where('id', $id)->where('status', '!=', 'Deleted')->first();
         $user = Auth::user();
 
         if (!$project) {
@@ -44,8 +44,8 @@ class TasksController extends Controller
 
     public function showDetailsTask($id, $id_task)
     {
-        $project = Project::where('id', $id)->where('status', '!=', 'deleted')->first();
-        $task = Task::where('id', $id_task)->where('status', '!=', 'deleted')->first();
+        $project = Project::where('id', $id)->where('status', '!=', 'Deleted')->first();
+        $task = Task::where('id', $id_task)->where('status', '!=', 'Deleted')->first();
         $user = Auth::user();
 
         if (!$project) {
@@ -152,7 +152,7 @@ class TasksController extends Controller
      */
     public function getById(string $id)
     {
-        $task = Task::where('id', $id)->where('status', '!=', 'deleted')->first();
+        $task = Task::where('id', $id)->where('status', '!=', 'Deleted')->first();
     }
 
     /**
@@ -172,7 +172,7 @@ class TasksController extends Controller
             return redirect()->route('projects.index')->with('error', 'Usuario no encontrado.');
         }
 
-        $task = Task::where('id', $id)->where('status', '!=', 'deleted')->first();
+        $task = Task::where('id', $id)->where('status', '!=', 'Deleted')->first();
         if (!$task) {
             return redirect()->route('tasks.index')->with('error', 'Tarea no encontrada.');
         }
@@ -196,7 +196,7 @@ class TasksController extends Controller
         if (!$userLogged) {
             return redirect()->route('tasks.index')->with('error', 'Usuario no autenticado.');
         }
-        $task = Task::where('id', $id)->where('status', '!=', 'deleted')->first();
+        $task = Task::where('id', $id)->where('status', '!=', 'Deleted')->first();
         if (!$task) {
             return redirect()->route('tasks.index')->with('error', 'Tarea no encontrada.');
         }
@@ -217,7 +217,7 @@ class TasksController extends Controller
         if (!$userLogged) {
             return redirect()->route('tasks')->with('error', 'Usuario no autenticado.');
         }
-        $task = Task::where('id', $id_task)->where('status', '!=', 'deleted')->first();
+        $task = Task::where('id', $id_task)->where('status', '!=', 'Deleted')->first();
         if (!$task) {
             return redirect()->route('tasks')->with('error', 'Tarea no encontrada.');
         }
@@ -242,7 +242,7 @@ class TasksController extends Controller
             return redirect()->route('projects.index')->with('error', 'Usuario no encontrado.');
         }
 
-        $task = Task::where('id', $id_task)->where('status', '!=', 'deleted')->first();
+        $task = Task::where('id', $id_task)->where('status', '!=', 'Deleted')->first();
         if (!$task) {
             return redirect()->route('tasks.index')->with('error', 'Tarea no encontrada.');
         }
