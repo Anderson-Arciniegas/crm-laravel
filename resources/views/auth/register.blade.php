@@ -39,13 +39,13 @@
 
                         <!-- Name input -->
                         <div data-mdb-input-init class="form-outline mb-4">
-                            <input type="text" id="name" name="name" class="form-control form-control-lg" placeholder="Enter your name" />
+                            <input type="text" id="name" name="name" class="form-control form-control-lg" placeholder="Enter your name" required />
                             <label class="form-label" for="form3Example3">Name</label>
                         </div>
 
                         <!-- Email input -->
                         <div data-mdb-input-init class="form-outline mb-4">
-                            <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Enter a valid email address" />
+                            <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Enter a valid email address" required />
                             <label class="form-label" for="form3Example3">Email address</label>
                         </div>
 
@@ -70,13 +70,13 @@
 
                         <!-- address input -->
                         <div data-mdb-input-init class="form-outline mb-4">
-                            <input type="text" id="address" name="address" class="form-control form-control-lg" placeholder="Enter your address" />
+                            <input type="text" id="address" name="address" class="form-control form-control-lg" placeholder="Enter your address" required />
                             <label class="form-label" for="form3Example3">Address</label>
                         </div>
 
                         <!-- Password input -->
                         <div data-mdb-input-init class="form-outline mb-3">
-                            <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="Enter password" />
+                            <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="Enter password" required />
                             <label class="form-label" for="form3Example4">Password</label>
                         </div>
 
