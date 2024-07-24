@@ -15,8 +15,7 @@ class TasksController extends Controller
     public function showTasks($id)
     {
         $project = Project::where('id', $id)->where('status', '!=', 'deleted')->first();
-
-        $tasks = Task::where('status', '!=', 'deleted')->get();
+        $tasks = Task::where('status', '!=', 'deleted')->where('id_project', $id)->get();
         if (!$project) {
             return redirect()->route('projects')->with('error', 'Proyecto no encontrado.');
         }
